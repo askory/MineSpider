@@ -117,23 +117,45 @@ public class DrawableView extends View {
 		edgePaint.setStrokeWidth(2);
 		edgePaint.setColor(0xFFEEDD86);
 
+		Paint selectedEdgePaint = new Paint();
+		selectedEdgePaint.setStrokeWidth(2);
+		selectedEdgePaint.setColor(0xFF885586);
+
 		Paint nodePaint = new Paint();
 		nodePaint.setStrokeWidth(5);
 		nodePaint.setColor(0xFF097286);
 
+		Paint selectedNodePaint = new Paint();
+		selectedNodePaint.setStrokeWidth(5);
+		selectedNodePaint.setColor(0xFFD17286);
+
 		Paint textPaint = new Paint();
 		textPaint.setStrokeWidth(1);
-		textPaint.setColor(0xCCEE6686);
+		textPaint.setColor(0xFFFFFFFF);
 
 		//Draw edges
-		//(This sub-optimally draws every edge twice)
 		for (Node n : nodes){
 			for (Node e : n.getEdges()){
-				canvas.drawLine(scaleX(n.getX()), scaleY(n.getY()), scaleX(e.getX()), scaleY(e.getY()), edgePaint);
+				//only draw it once
+				if (n.getId() > e.getId()){
+					Paint p;
+					if (e == selectedNode || n == selectedNode){
+						p = selectedEdgePaint;
+					}else{
+						p = edgePaint;
+					}
+					canvas.drawLine(scaleX(n.getX()), scaleY(n.getY()), scaleX(e.getX()), scaleY(e.getY()), p);
+				}
 			}
 		}
 		for (Node n : nodes){
-			canvas.drawCircle(scaleX(n.getX()), scaleY(n.getY()), scaleX(NODE_RADIUS), nodePaint);
+			Paint p;
+			if (n == selectedNode){
+				p = nodePaint;
+			}else{
+				p = selectedNodePaint;
+			}
+			canvas.drawCircle(scaleX(n.getX()), scaleY(n.getY()), scaleX(NODE_RADIUS), p);
 			canvas.drawText(Integer.toString(n.getNumNeighborMines()), scaleX(n.getX()) - 3, scaleY(n.getY()) + 3, textPaint);
 		}
 		invalidate();
@@ -141,11 +163,15 @@ public class DrawableView extends View {
 
 	@Override
 	public boolean onTouchEvent(final MotionEvent e){
-		if (e.getAction() == e.ACTION_DOWN){
-			Node n = this.findNodeAtPos(scaleDownX(e.getX()), scaleDownY(e.getY()));
-			if (n != null){
-				this.selectedNode = n;
-				Log.v("DrawableView","ACTION_DOWN on node "+n.getId());
+		if (e.getAction() == MotionEvent.ACTION_DOWN){
+			this.selectedNode = this.findNodeAtPos(scaleDownX(e.getX()), scaleDownY(e.getY()));
+			if (this.selectedNode != null){
+				Log.v("DrawableView","ACTION_DOWN on node "+this.selectedNode.getId());
+			}
+		}else if (e.getAction() == MotionEvent.ACTION_MOVE){
+			if (this.selectedNode != null){
+				this.selectedNode.setX(scaleDownX(e.getX()));
+				this.selectedNode.setY(scaleDownY(e.getY()));
 			}
 		}
 		return true;
