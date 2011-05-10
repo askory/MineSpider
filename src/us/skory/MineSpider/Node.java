@@ -5,11 +5,16 @@ import java.util.ArrayList;
 import android.util.Log;
 
 public class Node {
-	
+		
+
 	private int id;
-	private int x;
-	private int y;
+	private float x;
+	private float y;
+
 	private Boolean mine;
+	private Boolean hidden;
+	private Boolean selected;
+	
 	private int numNeighborMines;
 	private ArrayList<Node> edges;
 
@@ -18,22 +23,27 @@ public class Node {
 		this.id = _id;
 		this.edges = new ArrayList<Node>();
 		this.mine = false;
+		this.hidden = true;
 		this.numNeighborMines = 0;
 	}
 
-	public int getX(){
+	public int getId(){
+		return this.id;
+	}
+
+	public float getX(){
 		return this.x;
 	}
 
-	public int getY(){
+	public float getY(){
 		return this.y;
 	}
 
-	public void setX(int _x){
+	public void setX(float _x){
 		 this.x = _x;
 	}
 
-	public void setY(int _y){
+	public void setY(float _y){
 		this.y = _y;
 	}
 

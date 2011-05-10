@@ -16,15 +16,20 @@ public class DrawableView extends View {
 	Context mContext;
 	ArrayList<Node> nodes;
 	Random random;
+	Node selectedNode;
 	
 	public static int NUM_NODES = 10;
 	public static double PROB_MINE = 0.33;
 	public static double PROB_EDGE = 0.25;
+	public static int SIDE_PADDING = 5;
+	public static float NODE_RADIUS = 0.02f;
 	
 	public DrawableView(Context context) {
 		super(context);
+		
 		mContext = context;
 		random = new Random();
+
 		nodes = new ArrayList<Node>();
 		for (int i = 0; i < NUM_NODES; i++){
 
@@ -39,8 +44,8 @@ public class DrawableView extends View {
 
 			//Position node randomly
 			//(need way to figure out screen size)
-			n.setX(random.nextInt(300));
-			n.setY(random.nextInt(400));
+			n.setX(random.nextFloat());
+			n.setY(random.nextFloat());
 			
 			//All nodes are connected to their two neighbors in a circular chain
 			if (i > 0){
@@ -74,6 +79,37 @@ public class DrawableView extends View {
 		}
 	}
 
+	private int scaleX(float x){
+		return (int) (SIDE_PADDING + (this.getWidth() - (2 * SIDE_PADDING)) * x);
+	}
+
+	private float scaleDownX(float f){
+		return (f - SIDE_PADDING) / (float) (this.getWidth() - (2 * SIDE_PADDING));
+	}
+
+	private int scaleY(float y){
+		return (int) (SIDE_PADDING + (this.getHeight() - (2 * SIDE_PADDING)) * y);
+	}
+
+	private float scaleDownY(float f){
+		return (f - SIDE_PADDING) / (float) (this.getHeight() - (2 * SIDE_PADDING));
+	}
+	
+	private Node findNodeAtPos(float x, float y){
+		for (Node n : this.nodes){
+			//use a rectangle to approximate the node's circle out of laziness
+			if (
+					   (x > (n.getX() - NODE_RADIUS))
+					&& (x < (n.getX() + NODE_RADIUS))
+					&& (y > (n.getY() - NODE_RADIUS))
+					&& (y < (n.getY() + NODE_RADIUS))
+				){
+				return n;
+			}
+		}
+		return null;
+	}
+	
 	@Override
 	protected void onDraw(Canvas canvas){
 		
@@ -93,19 +129,25 @@ public class DrawableView extends View {
 		//(This sub-optimally draws every edge twice)
 		for (Node n : nodes){
 			for (Node e : n.getEdges()){
-				canvas.drawLine(n.getX(), n.getY(), e.getX(), e.getY(), edgePaint);
+				canvas.drawLine(scaleX(n.getX()), scaleY(n.getY()), scaleX(e.getX()), scaleY(e.getY()), edgePaint);
 			}
 		}
 		for (Node n : nodes){
-			canvas.drawCircle(n.getX(), n.getY(), 8, nodePaint);
-			canvas.drawText(Integer.toString(n.getNumNeighborMines()), n.getX() - 3, n.getY() + 3, textPaint);
+			canvas.drawCircle(scaleX(n.getX()), scaleY(n.getY()), scaleX(NODE_RADIUS), nodePaint);
+			canvas.drawText(Integer.toString(n.getNumNeighborMines()), scaleX(n.getX()) - 3, scaleY(n.getY()) + 3, textPaint);
 		}
 		invalidate();
 	}
 
 	@Override
 	public boolean onTouchEvent(final MotionEvent e){
-		Log.v("DrawableView","touch event of type "+e.getAction()+" at "+e.getX()+","+e.getY());
+		if (e.getAction() == e.ACTION_DOWN){
+			Node n = this.findNodeAtPos(scaleDownX(e.getX()), scaleDownY(e.getY()));
+			if (n != null){
+				this.selectedNode = n;
+				Log.v("DrawableView","ACTION_DOWN on node "+n.getId());
+			}
+		}
 		return true;
 	}
 }
