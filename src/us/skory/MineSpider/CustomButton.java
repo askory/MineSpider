@@ -2,12 +2,10 @@ package us.skory.MineSpider;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.Button;
 
 public class CustomButton extends Button {
 	
-	@SuppressWarnings("unused")
 	protected Node selectedNode;
 	
 	public CustomButton(Context context){

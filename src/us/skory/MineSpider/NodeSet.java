@@ -1,13 +1,11 @@
 package us.skory.MineSpider;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Random;
-import java.util.NoSuchElementException;
 
 import android.util.Log;
 
-public class NodeSet implements Iterator<Node> {
+public class NodeSet {
 	
 	public static int NUM_NODES = 15;
 	public static double PROB_MINE = 0.15;
@@ -71,36 +69,14 @@ public class NodeSet implements Iterator<Node> {
 		
 	}
 
-	@Override
-	public boolean hasNext() {
-		while (this.nodes.get(curNode).isDeleted())
-			this.curNode++;
-		if (curNode < this.nodes.size() -1)
-			return true;
-		else
-			curNode = 0;
-			return false;
-	}
-
-	@Override
-	public Node next() {
-		if (this.hasNext()){
-			Node ret;
-			while (this.nodes.get(curNode).isDeleted())
-				this.curNode++;
-			ret = this.nodes.get(curNode);
-			curNode++;
-			return ret;
-		}else{
-			this.curNode = 0;
-			throw new NoSuchElementException();
+	public ArrayList<Node> getActiveNodes(){
+		ArrayList<Node> ret = new ArrayList<Node>();
+		for (Node n : this.nodes){
+			if (!n.isDeleted()){
+				ret.add(n);
+			}
 		}
+		return ret;
 	}
-
-	@Override
-	public void remove() {
-		// ???		
-	}
-	
 
 }

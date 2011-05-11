@@ -65,8 +65,7 @@ public class DrawableView extends View {
 		if (this.nodeSet == null)
 			return null;
 		
-		while(nodeSet.hasNext()){
-			Node n = nodeSet.next();
+		for (Node n : nodeSet.getActiveNodes()){
 			//use a rectangle to approximate the node's circle out of laziness
 			if (
 					   (x > (n.getX() - NODE_RADIUS))
@@ -120,8 +119,7 @@ public class DrawableView extends View {
 		minePaint.setColor(0xFF000000);
 		
 		//Draw edges
-		while(nodeSet.hasNext()){
-			Node n = nodeSet.next();
+		for (Node n : nodeSet.getActiveNodes()){
 			for (Node e : n.getEdges()){
 				//only draw it once
 				if (!e.isDeleted() && (n.getId() > e.getId())){
@@ -137,8 +135,7 @@ public class DrawableView extends View {
 		}
 		
 		//Draw nodes
-		while(nodeSet.hasNext()){
-			Node n = nodeSet.next();
+		for (Node n : nodeSet.getActiveNodes()){
 			Paint p;
 			if (n == selectedNode){
 				p = nodePaint;
