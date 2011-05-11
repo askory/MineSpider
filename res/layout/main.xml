@@ -4,9 +4,29 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     >
-<TextView  
-    android:layout_width="fill_parent" 
-    android:layout_height="wrap_content" 
-    android:text="@string/hello"
-    />
+	<LinearLayout android:id="@+id/buttonContainer"
+		android:orientation="horizontal"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+	>
+		<us.skory.MineSpider.RevealButton android:id="@+id/revealButton"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="Reveal"
+		/>
+		<us.skory.MineSpider.FlagButton android:id="@+id/flagButton"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="Flag"
+		/>
+		<Button android:id="@+id/newButton"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="New"
+		/>
+	</LinearLayout>
+	<us.skory.MineSpider.DrawableView android:id="@+id/drawableView"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+	/>
 </LinearLayout>
