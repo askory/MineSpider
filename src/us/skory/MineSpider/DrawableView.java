@@ -18,7 +18,8 @@ public class DrawableView extends View {
 	private FlagButton flagButton;
 
 	public static int SIDE_PADDING = 5;
-	public static float NODE_RADIUS = 0.02f;
+	public static float NODE_DRAW_RADIUS = 0.03f;
+	public static float NODE_TOUCH_AREA = 0.045f;
 	
 	public DrawableView(Context context) {
 		super(context);
@@ -68,10 +69,10 @@ public class DrawableView extends View {
 		for (Node n : nodeSet.getActiveNodes()){
 			//use a rectangle to approximate the node's circle out of laziness
 			if (
-					   (x > (n.getX() - NODE_RADIUS))
-					&& (x < (n.getX() + NODE_RADIUS))
-					&& (y > (n.getY() - NODE_RADIUS))
-					&& (y < (n.getY() + NODE_RADIUS))
+					   (x > (n.getX() - NODE_TOUCH_AREA))
+					&& (x < (n.getX() + NODE_TOUCH_AREA))
+					&& (y > (n.getY() - NODE_TOUCH_AREA))
+					&& (y < (n.getY() + NODE_TOUCH_AREA))
 				){
 				return n;
 			}
@@ -144,7 +145,7 @@ public class DrawableView extends View {
 			}else{
 				p = selectedNodePaint;
 			}
-			canvas.drawCircle(scaleX(n.getX()), scaleY(n.getY()), scaleX(NODE_RADIUS), p);
+			canvas.drawCircle(scaleX(n.getX()), scaleY(n.getY()), scaleX(NODE_DRAW_RADIUS), p);
 			if (!n.isHidden()){
 				if (n.isMine()){
 					canvas.drawText("B", scaleX(n.getX()) - 3, scaleY(n.getY()) + 3, minePaint);					
