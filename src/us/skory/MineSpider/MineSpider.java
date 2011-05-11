@@ -21,14 +21,14 @@ public class MineSpider extends Activity {
         mRevealButton = (RevealButton) findViewById(R.id.revealButton);
         mFlagButton = (FlagButton) findViewById(R.id.flagButton);
         mDrawableView.registerButtons(mRevealButton, mFlagButton);
-        mDrawableView.registerNodeSet(new NodeSet());
+        mDrawableView.registerNodeSet(new NodeSet(20,5));
         
         mNewButton = (Button) findViewById(R.id.newButton);
         mNewButton.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-		        mDrawableView.registerNodeSet(new NodeSet());				
+		        mDrawableView.registerNodeSet(new NodeSet(20,5));
 			}
 		});
 	}

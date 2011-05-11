@@ -7,56 +7,54 @@ import android.util.Log;
 
 public class NodeSet {
 	
-	public static int NUM_NODES = 15;
-	public static double PROB_MINE = 0.15;
-	public static double PROB_EDGE = 0.20;
+	public static double PROB_EDGE = 0.13;
 
 	ArrayList<Node> nodes;
 	Random random;
-	int curNode = 0;
 	
-	public NodeSet(){
+	public NodeSet(int num_nodes, int num_mines){
 
 		random = new Random();
 
 		nodes = new ArrayList<Node>();
-		for (int i = 0; i < NUM_NODES; i++){
+		for (int i = 0; i < num_nodes; i++){
 	
 			//Create a new node with n.id = i
 			Node n = new Node(i);
 	
-			//Put a mine in this node according to PROB_MINE
-			if (random.nextFloat() < PROB_MINE){
-				Log.v("DrawableView","Adding a mine to node "+i);
-				n.setMine(true);
-			}
-	
 			//Position node randomly
-			//(need way to figure out screen size)
 			n.setX(random.nextFloat());
 			n.setY(random.nextFloat());
 			
-			//All nodes are connected to their two neighbors in a circular chain
-			if (i > 0){
-					n.addEdge(nodes.get(i-1));
-					nodes.get(i-1).addEdge(n);
-				if (i == NUM_NODES - 1){
-					n.addEdge(nodes.get(0));
-					nodes.get(0).addEdge(n);
-				}
-			}
-			
 			nodes.add(n);
 		}
+
+		for (int m = 0; m < num_mines; m++){
+			int n_id = random.nextInt(num_nodes);
+			while (this.nodes.get(n_id).isMine()){
+				n_id = random.nextInt(num_nodes);				
+			}
+			this.nodes.get(n_id).setMine(true);
+		}
 	
-	
-		//Add some edges between non-neighbors according to PROB_EDGE
-		for (int i = 0; i < NUM_NODES; i++){
+		//All nodes are connected to their two neighbors in a circular chain
+		//And add some edges between non-neighbors according to PROB_EDGE
+		for (int i = 0; i < num_nodes; i++){
+
+			if (i > 0){
+				nodes.get(i).addEdge(nodes.get(i-1));
+				nodes.get(i-1).addEdge(nodes.get(i));
+			}
+			if (i == num_nodes - 1){
+				nodes.get(i).addEdge(nodes.get(0));
+				nodes.get(0).addEdge(nodes.get(i));
+			}
+			
 			int stop;
 			if (i == 0){
-				stop = NUM_NODES - 1;
+				stop = num_nodes - 1;
 			}else{
-				stop = NUM_NODES;	
+				stop = num_nodes;	
 			}
 			for (int j = i + 2; j < stop; j++){
 				if (random.nextFloat() < PROB_EDGE){
