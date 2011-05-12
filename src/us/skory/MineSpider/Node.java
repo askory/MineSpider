@@ -2,11 +2,15 @@ package us.skory.MineSpider;
 
 import java.util.ArrayList;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.util.Log;
 
 public class Node {
 		
-
+	private Context mContext;
+	private NodeSet nodeSet;
 	private int id;
 	private float x;
 	private float y;
@@ -19,8 +23,10 @@ public class Node {
 	private int numNeighborMines;
 	private ArrayList<Node> edges;
 	
-	public Node(int _id){
+	public Node(Context _mContext, NodeSet _nodeSet, int _id){
 		super();
+		this.mContext = _mContext;
+		this.nodeSet = _nodeSet;
 		this.id = _id;
 		this.edges = new ArrayList<Node>();
 		this.mine = false;
@@ -55,7 +61,7 @@ public class Node {
 	}
 
 	public Boolean isHidden(){
-		return this.hidden;
+		return (!this.deleted && this.hidden);
 	}
 
 	public Boolean isFlagged(){
@@ -85,27 +91,36 @@ public class Node {
 		return this.numNeighborMines;
 	}
 
-	public void reveal() {
+	public void reveal(boolean sideEffects) {
 		if (this.isMine()){
-			Log.v("Node","BOOOOOOM!");
 			this.flagged = false;
 			this.hidden = false;
+			if (sideEffects){
+				nodeSet.youLose();
+			}
 		} else if (this.numNeighborMines == 0){
 			this.deleted = true;
-			for (Node n : this.edges){
-				if (!n.isDeleted()){
-					n.reveal();
+			if (sideEffects){
+				for (Node n : this.edges){
+					if (!n.isDeleted()){
+						n.reveal(true);
+					}
 				}
+				nodeSet.checkWin();
 			}
 		} else {
 			this.flagged = false;
 			this.hidden = false;
+			if (sideEffects){
+				nodeSet.checkWin();
+			}
 		}
 	}
 
 	public Boolean flag() {
 		if (this.hidden){
 			this.flagged = true;
+			nodeSet.checkWin();
 			return true;
 		}
 		return false;

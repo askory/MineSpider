@@ -31,7 +31,7 @@ public class RevealButton extends CustomButton {
 
 	public void onPress() {
 		if (selectedNode != null){
-			selectedNode.reveal();
+			selectedNode.reveal(true);
 			setPressed(true);
 		}
 	}

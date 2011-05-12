@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.lang.Math;
 import java.util.Random;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.util.Log;
 
 public class NodeSet {
@@ -11,12 +14,52 @@ public class NodeSet {
 	public static double PROB_EDGE = 0.13;
 	public static float LAYOUT_RADIUS = 0.45f;
 
+	private Context mContext;
+	private int num_nodes;
+	private int num_mines;
 	ArrayList<Node> nodes;
+	AlertDialog youLoseAlert;
+	AlertDialog youWinAlert;
 	Random random;
 	
-	public NodeSet(int num_nodes, int num_mines){
+	public NodeSet(Context _mContext, int _num_nodes, int _num_mines){
 
+		this.mContext = _mContext;
+		this.num_nodes = _num_nodes;
+		this.num_mines = _num_mines;
+		this.random = new Random();
 		
+		AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+		builder.setCancelable(true)
+		       .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+		                reInit();
+		           }
+		       })
+		       .setNegativeButton("No", new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+		                dialog.cancel();
+		           }
+		       });
+		builder.setMessage("Kaboom. You lose!\nStart a new game?");
+		youLoseAlert = builder.create();
+		builder.setMessage("Well done, You won!\nStart a new game?");
+		youWinAlert = builder.create();
+		
+		this.reInit();
+	}
+
+	public ArrayList<Node> getActiveNodes(){
+		ArrayList<Node> ret = new ArrayList<Node>();
+		for (Node n : this.nodes){
+			if (!n.isDeleted()){
+				ret.add(n);
+			}
+		}
+		return ret;
+	}
+
+	public void reInit() {
 		//create num_nodes points on a circle
 		float A = (float) (2*Math.PI / (float) num_nodes);
 		ArrayList<Number> xps = new ArrayList<Number>();
@@ -25,14 +68,12 @@ public class NodeSet {
 			xps.add(0.5 + (LAYOUT_RADIUS * Math.cos(p * A)));
 			yps.add(0.5 + (LAYOUT_RADIUS * Math.sin(p * A)));
 		}
-		
-		random = new Random();
-		
+				
 		nodes = new ArrayList<Node>();
 		for (int i = 0; i < num_nodes; i++){
 	
 			//Create a new node with n.id = i
-			Node n = new Node(i);
+			Node n = new Node(mContext, this, i);
 	
 			//Position node randomly on circle
 			int p = random.nextInt(xps.size());
@@ -76,18 +117,35 @@ public class NodeSet {
 					nodes.get(j).addEdge(nodes.get(i));
 				}
 			}
-		}
-		
+		}		
 	}
-
-	public ArrayList<Node> getActiveNodes(){
-		ArrayList<Node> ret = new ArrayList<Node>();
+	
+	public void youLose(){
 		for (Node n : this.nodes){
 			if (!n.isDeleted()){
-				ret.add(n);
+				n.reveal(false);
 			}
 		}
-		return ret;
+		youLoseAlert.show();
 	}
 
+	public void checkWin(){
+		int hidden = 0;
+		int flagged = 0;
+		int unflagged = 0;
+		for (Node n : this.nodes){
+			if (n.isHidden()){
+				hidden++;
+			}
+			if (n.isFlagged()){
+				flagged++;
+			}
+			if (n.isMine() && !n.isFlagged()){
+				unflagged++;
+			}
+		}
+		if ((hidden - flagged) == unflagged){
+			youWinAlert.show();
+		}
+	}
 }

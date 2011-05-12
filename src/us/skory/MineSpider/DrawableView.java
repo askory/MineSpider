@@ -70,8 +70,8 @@ public class DrawableView extends View {
 		textPaint.setTextScaleX(TEXT_SCALE);
 	}
 
-	public void registerNodeSet(NodeSet _nodeSet){
-		this.nodeSet = _nodeSet;
+	public void initNodeSet(){
+		this.nodeSet = new NodeSet(mContext, 20, 5);
 	}
 	
 	public void registerButtons(RevealButton _revealButton, FlagButton _flagButton) {
