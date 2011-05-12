@@ -17,25 +17,22 @@ public class RevealButton extends CustomButton {
 	}
 
 	private void initRevealButton(){
-		this.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				if (selectedNode != null){
-					selectedNode.reveal();
-					setBackgroundColor(0x888800FF);
-				}
-			}
-		});
 	}
 	
 	@Override
 	public void selectNode(Node n){
 		super.selectNode(n);
 		if (n != null && !n.isHidden()){
-			this.setBackgroundColor(0x888800FF);
+			this.setPressed(true);
 		} else {
-			this.setBackgroundColor(0xFFFFFFFF);			
+			this.setPressed(false);
+		}
+	}
+
+	public void onPress() {
+		if (selectedNode != null){
+			selectedNode.reveal();
+			setPressed(true);
 		}
 	}
 

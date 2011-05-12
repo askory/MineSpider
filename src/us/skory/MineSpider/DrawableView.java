@@ -17,9 +17,36 @@ public class DrawableView extends View {
 	private RevealButton revealButton;
 	private FlagButton flagButton;
 
-	public static int SIDE_PADDING = 5;
-	public static float NODE_DRAW_RADIUS = 0.03f;
-	public static float NODE_TOUCH_AREA = 0.045f;
+	private Paint edgePaint;
+	private Paint nodePaint;
+	private Paint textPaint;
+	
+	public static final int SIDE_PADDING = 5;
+	public static final float NODE_DRAW_RADIUS = 0.03f;
+	public static final float SELECTED_NODE_DRAW_RADIUS = 0.023f;
+	public static final float NODE_TOUCH_AREA = 0.045f;
+	public static final int TEXT_OFFSET = 6;
+	public static final float TEXT_SCALE = 1.8f;
+
+	public static final int EDGE_OPACITY = 0x95;
+	public static final int EDGE_COLOR = 0xD0EEDD86;
+	public static final int SELECTED_EDGE_COLOR = 0xD0F0F0F0;
+	public static final int NODE_OPACITY = 0x88;
+	public static final int HIDDEN_NODE_COLOR = 0xD0DDCB86;
+	public static final int SELECTED_NODE_COLOR = 0xDDF0F0F0;
+	public static final int[] NUMBER_COLORS = new int[]{
+		0,
+		0xFF3849FF,     //1 = blue
+		0xFF0D8500,		//2 = green
+		0xFFED2121,		//3 = red
+		0xFFC121ED,		//4 = purple
+		0xFFC86AF7,		//5 = light purple
+		0xFFDFB8F2,		//6 = lighter purple
+		0xFFFFFFFF,		//7+ = white
+	};
+	public static int FLAG_COLOR = 0xFFFF0000;
+	public static int MINE_COLOR = 0xFF000000;
+
 	
 	public DrawableView(Context context) {
 		super(context);
@@ -33,6 +60,14 @@ public class DrawableView extends View {
 	
 	private void initView(Context context){
 		mContext = context;
+
+		edgePaint = new Paint();
+		edgePaint.setStrokeWidth(2);
+		nodePaint = new Paint();
+		nodePaint.setStrokeWidth(5);
+		textPaint = new Paint();
+		textPaint.setStrokeWidth(2);
+		textPaint.setTextScaleX(TEXT_SCALE);
 	}
 
 	public void registerNodeSet(NodeSet _nodeSet){
@@ -80,6 +115,16 @@ public class DrawableView extends View {
 		return null;
 	}
 
+	private int getColor(Node n, int alpha){
+		int color;
+		int num = n.getNumNeighborMines();
+		if (num >= NUMBER_COLORS.length){
+			color = NUMBER_COLORS[num - 1];
+		} else {
+			color = NUMBER_COLORS[num];
+		}
+		return (color & (~0 >> 24) | (alpha << 24));
+	}
 	
 	@Override
 	protected void onDraw(Canvas canvas){
@@ -87,73 +132,61 @@ public class DrawableView extends View {
 		if (this.nodeSet == null)
 			return;
 		
-		Paint edgePaint = new Paint();
-		edgePaint.setStrokeWidth(2);
-		edgePaint.setColor(0xD0EEDD86);
-
-		Paint selectedEdgePaint = new Paint();
-		selectedEdgePaint.setStrokeWidth(2);
-		selectedEdgePaint.setColor(0xF0885586);
-
-		Paint nodePaint = new Paint();
-		nodePaint.setStrokeWidth(5);
-		nodePaint.setColor(0xF3097286);
-
-		Paint hiddenNodePaint = new Paint();
-		hiddenNodePaint.setStrokeWidth(5);
-		hiddenNodePaint.setColor(0xF0DDCB86);
-
-		Paint selectedNodePaint = new Paint();
-		selectedNodePaint.setStrokeWidth(5);
-		selectedNodePaint.setColor(0xF0D17286);
-
-		Paint numberPaint = new Paint();
-		numberPaint.setStrokeWidth(1);
-		numberPaint.setColor(0xFFFFFFFF);
-
-		Paint flagPaint = new Paint();
-		flagPaint.setStrokeWidth(1);
-		flagPaint.setColor(0xFFFF0000);
-
-		Paint minePaint = new Paint();
-		minePaint.setStrokeWidth(1);
-		minePaint.setColor(0xFF000000);
-		
 		//Draw edges
 		for (Node n : nodeSet.getActiveNodes()){
 			for (Node e : n.getEdges()){
-				//only draw it once
+				//don't draw to deleted nodes, and only draw each edge in one direction
 				if (!e.isDeleted() && (n.getId() > e.getId())){
-					Paint p;
-					if (e == selectedNode || n == selectedNode){
-						p = selectedEdgePaint;
+					if (e == selectedNode){
+						if (!n.isHidden())
+							edgePaint.setColor(getColor(n,EDGE_OPACITY));
+						else
+							edgePaint.setColor(SELECTED_NODE_COLOR);
+					}else if (n == selectedNode){
+						if (!e.isHidden())
+							edgePaint.setColor(getColor(e,EDGE_OPACITY));
+						else
+							edgePaint.setColor(SELECTED_NODE_COLOR);
 					}else{
-						p = edgePaint;
+						edgePaint.setColor(EDGE_COLOR);
 					}
-					canvas.drawLine(scaleX(n.getX()), scaleY(n.getY()), scaleX(e.getX()), scaleY(e.getY()), p);
+					canvas.drawLine(scaleX(n.getX()), scaleY(n.getY()), scaleX(e.getX()), scaleY(e.getY()), edgePaint);
 				}
 			}
 		}
 		
 		//Draw nodes
 		for (Node n : nodeSet.getActiveNodes()){
-			Paint p;
+
+			//draw the node's circle
 			if (n == selectedNode){
-				p = nodePaint;
-			}else if (n.isHidden()){
-				p = hiddenNodePaint;
+				nodePaint.setColor(SELECTED_NODE_COLOR);
+				canvas.drawCircle(scaleX(n.getX()), scaleY(n.getY()), scaleX(NODE_DRAW_RADIUS), nodePaint);
+				if (!n.isHidden() && !n.isMine()){
+					nodePaint.setColor(getColor(n,NODE_OPACITY));
+					canvas.drawCircle(scaleX(n.getX()), scaleY(n.getY()), scaleX(SELECTED_NODE_DRAW_RADIUS), nodePaint);
+				}
 			}else{
-				p = selectedNodePaint;
+				if (n.isHidden() || n.isMine()){
+					nodePaint.setColor(HIDDEN_NODE_COLOR);
+				}else{
+					nodePaint.setColor(getColor(n,NODE_OPACITY));
+				}
+				canvas.drawCircle(scaleX(n.getX()), scaleY(n.getY()), scaleX(NODE_DRAW_RADIUS), nodePaint);
 			}
-			canvas.drawCircle(scaleX(n.getX()), scaleY(n.getY()), scaleX(NODE_DRAW_RADIUS), p);
+
+			//draw node's text if not hidden or if flagged
 			if (!n.isHidden()){
 				if (n.isMine()){
-					canvas.drawText("B", scaleX(n.getX()) - 3, scaleY(n.getY()) + 3, minePaint);					
+					textPaint.setColor(MINE_COLOR);
+					canvas.drawText("B", scaleX(n.getX()) - TEXT_OFFSET, scaleY(n.getY()) + TEXT_OFFSET, textPaint);					
 				}else{
-					canvas.drawText(Integer.toString(n.getNumNeighborMines()), scaleX(n.getX()) - 3, scaleY(n.getY()) + 3, numberPaint);
+					textPaint.setColor(MINE_COLOR);
+					canvas.drawText(Integer.toString(n.getNumNeighborMines()), scaleX(n.getX()) - TEXT_OFFSET, scaleY(n.getY()) + TEXT_OFFSET, textPaint);
 				}
 			}else if (n.isFlagged()){
-				canvas.drawText("F", scaleX(n.getX()) - 3, scaleY(n.getY()) + 3, flagPaint);				
+				textPaint.setColor(FLAG_COLOR);
+				canvas.drawText("F", scaleX(n.getX()) - TEXT_OFFSET, scaleY(n.getY()) + TEXT_OFFSET, textPaint);
 			}
 		}
 		invalidate();
@@ -172,9 +205,6 @@ public class DrawableView extends View {
 		//select a node
 		if (e.getAction() == MotionEvent.ACTION_DOWN){
 			selectNode(this.findNodeAtPos(scaleDownX(e.getX()), scaleDownY(e.getY())));
-			if (this.selectedNode != null){
-				Log.v("DrawableView","ACTION_DOWN on node "+this.selectedNode.getId());
-			}
 		//move a node
 		}else if (e.getAction() == MotionEvent.ACTION_MOVE){
 			if (this.selectedNode != null){
@@ -183,8 +213,6 @@ public class DrawableView extends View {
 					this.selectedNode.setY(scaleDownY(e.getY()));
 				}
 			}
-		}else{
-			Log.v("DrawableView", "got code: " + e.getAction());
 		}
 		return true;
 	}

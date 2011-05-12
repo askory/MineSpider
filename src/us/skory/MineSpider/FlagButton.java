@@ -17,33 +17,30 @@ public class FlagButton extends CustomButton {
 	}
 
 	private void initFlagButton() {
-		this.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				if (selectedNode != null){
-					if (!selectedNode.isFlagged()){
-						if (selectedNode.flag()){
-							setBackgroundColor(0x888800FF);
-						}
-					} else {
-						if (selectedNode.unflag()){
-							setBackgroundColor(0xFFFFFFFF);
-						}
-					}
-				}
-			}
-		});		
 	}
 
 	@Override
 	public void selectNode(Node n){
 		super.selectNode(n);
 		if (n != null && n.isFlagged()){
-			this.setBackgroundColor(0x888800FF);
+			this.setPressed(true);
 		} else {
-			this.setBackgroundColor(0xFFFFFFFF);			
+			this.setPressed(false);
 		}
 	}
 	
+	public void onPress() {
+		if (selectedNode != null){
+			if (!selectedNode.isFlagged()){
+				if (selectedNode.flag()){
+					setPressed(true);
+				}
+			} else {
+				if (selectedNode.unflag()){
+					setPressed(false);
+				}
+			}
+		}
+	}
+
 }

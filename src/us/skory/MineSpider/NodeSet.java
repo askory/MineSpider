@@ -1,6 +1,7 @@
 package us.skory.MineSpider;
 
 import java.util.ArrayList;
+import java.lang.Math;
 import java.util.Random;
 
 import android.util.Log;
@@ -8,24 +9,36 @@ import android.util.Log;
 public class NodeSet {
 	
 	public static double PROB_EDGE = 0.13;
+	public static float LAYOUT_RADIUS = 0.45f;
 
 	ArrayList<Node> nodes;
 	Random random;
 	
 	public NodeSet(int num_nodes, int num_mines){
 
+		
+		//create num_nodes points on a circle
+		float A = (float) (2*Math.PI / (float) num_nodes);
+		ArrayList<Number> xps = new ArrayList<Number>();
+		ArrayList<Number> yps = new ArrayList<Number>();
+		for (int p = 0; p < num_nodes; p++){
+			xps.add(0.5 + (LAYOUT_RADIUS * Math.cos(p * A)));
+			yps.add(0.5 + (LAYOUT_RADIUS * Math.sin(p * A)));
+		}
+		
 		random = new Random();
-
+		
 		nodes = new ArrayList<Node>();
 		for (int i = 0; i < num_nodes; i++){
 	
 			//Create a new node with n.id = i
 			Node n = new Node(i);
 	
-			//Position node randomly
-			n.setX(random.nextFloat());
-			n.setY(random.nextFloat());
-			
+			//Position node randomly on circle
+			int p = random.nextInt(xps.size());
+			n.setX((xps.remove(p).floatValue()));
+			n.setY((yps.remove(p).floatValue()));
+
 			nodes.add(n);
 		}
 
