@@ -103,14 +103,25 @@ public class Node {
 		}
 	}
 
-	public void flag() {
+	public Boolean flag() {
 		if (this.hidden){
 			this.flagged = true;
+			return true;
 		}
+		return false;
+	}
+
+	public Boolean unflag() {
+		if (this.hidden){
+			this.flagged = false;
+			return true;
+		}
+		return false;
 	}
 
 	public boolean isDeleted() {
 		return this.deleted;
 	}
+
 
 }

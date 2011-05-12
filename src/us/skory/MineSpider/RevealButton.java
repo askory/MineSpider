@@ -23,6 +23,7 @@ public class RevealButton extends CustomButton {
 			public void onClick(View v) {
 				if (selectedNode != null){
 					selectedNode.reveal();
+					setBackgroundColor(0x888800FF);
 				}
 			}
 		});

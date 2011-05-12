@@ -178,8 +178,10 @@ public class DrawableView extends View {
 		//move a node
 		}else if (e.getAction() == MotionEvent.ACTION_MOVE){
 			if (this.selectedNode != null){
-				this.selectedNode.setX(scaleDownX(e.getX()));
-				this.selectedNode.setY(scaleDownY(e.getY()));
+				if (e.getY() > 0 && e.getY() < this.getHeight() && e.getX() > 0 && e.getX() < this.getWidth()){
+					this.selectedNode.setX(scaleDownX(e.getX()));
+					this.selectedNode.setY(scaleDownY(e.getY()));
+				}
 			}
 		}else{
 			Log.v("DrawableView", "got code: " + e.getAction());

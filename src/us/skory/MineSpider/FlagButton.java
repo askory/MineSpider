@@ -22,7 +22,15 @@ public class FlagButton extends CustomButton {
 			@Override
 			public void onClick(View v) {
 				if (selectedNode != null){
-					selectedNode.flag();
+					if (!selectedNode.isFlagged()){
+						if (selectedNode.flag()){
+							setBackgroundColor(0x888800FF);
+						}
+					} else {
+						if (selectedNode.unflag()){
+							setBackgroundColor(0xFFFFFFFF);
+						}
+					}
 				}
 			}
 		});		
