@@ -129,6 +129,7 @@ public class Node {
 	public Boolean unflag() {
 		if (this.hidden){
 			this.flagged = false;
+			nodeSet.updateCounts();
 			return true;
 		}
 		return false;

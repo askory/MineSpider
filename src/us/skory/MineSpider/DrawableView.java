@@ -8,6 +8,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.TextView;
 
 public class DrawableView extends View {
 	
@@ -16,6 +17,7 @@ public class DrawableView extends View {
 	private Node selectedNode;
 	private RevealButton revealButton;
 	private FlagButton flagButton;
+	private TextView countsTextView;
 
 	private Paint edgePaint;
 	private Paint nodePaint;
@@ -71,12 +73,13 @@ public class DrawableView extends View {
 	}
 
 	public void initNodeSet(){
-		this.nodeSet = new NodeSet(mContext, 20, 5);
+		this.nodeSet = new NodeSet(mContext, countsTextView, 20, 5);
 	}
 	
-	public void registerButtons(RevealButton _revealButton, FlagButton _flagButton) {
+	public void registerItems(RevealButton _revealButton, FlagButton _flagButton, TextView _countsTextView) {
 		this.revealButton = _revealButton;
 		this.flagButton = _flagButton;
+		this.countsTextView = _countsTextView;
 	}
 
 	

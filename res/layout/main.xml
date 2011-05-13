@@ -7,8 +7,7 @@
 	<LinearLayout android:id="@+id/buttonContainer"
 		android:orientation="horizontal"
 		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-	>
+		android:layout_height="wrap_content">
 		<us.skory.MineSpider.RevealButton android:id="@+id/revealButton"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
@@ -19,14 +18,22 @@
 			android:layout_height="wrap_content"
 			android:text="Flag"
 		/>
+		<TextView android:id="@+id/countsTextView"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+		/>
 		<Button android:id="@+id/newButton"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:text="New"
 		/>
+		<Button android:id="@+id/prefsButton"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="Prefs"
+		/>
 	</LinearLayout>
 	<us.skory.MineSpider.DrawableView android:id="@+id/drawableView"
 		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-	/>
+		android:layout_height="wrap_content" android:layout_weight="1"/>
 </LinearLayout>

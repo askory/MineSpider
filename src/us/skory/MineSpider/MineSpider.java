@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 public class MineSpider extends Activity {
 
@@ -11,6 +12,7 @@ public class MineSpider extends Activity {
 	private static RevealButton mRevealButton;
 	private static FlagButton mFlagButton;
 	private static Button mNewButton;
+	private static TextView mCountsTextView;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -20,7 +22,8 @@ public class MineSpider extends Activity {
         mDrawableView = (DrawableView) findViewById(R.id.drawableView);
         mRevealButton = (RevealButton) findViewById(R.id.revealButton);
         mFlagButton = (FlagButton) findViewById(R.id.flagButton);
-        mDrawableView.registerButtons(mRevealButton, mFlagButton);
+        mCountsTextView = (TextView) findViewById(R.id.countsTextView);
+        mDrawableView.registerItems(mRevealButton, mFlagButton, mCountsTextView);
         mDrawableView.initNodeSet();
         
         mNewButton = (Button) findViewById(R.id.newButton);

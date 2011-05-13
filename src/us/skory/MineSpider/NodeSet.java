@@ -8,6 +8,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.util.Log;
+import android.widget.TextView;
 
 public class NodeSet {
 	
@@ -17,14 +18,16 @@ public class NodeSet {
 	private Context mContext;
 	private int num_nodes;
 	private int num_mines;
-	ArrayList<Node> nodes;
-	AlertDialog youLoseAlert;
-	AlertDialog youWinAlert;
-	Random random;
+	private TextView countsTextView;
+	private ArrayList<Node> nodes;
+	private AlertDialog youLoseAlert;
+	private AlertDialog youWinAlert;
+	private Random random;
 	
-	public NodeSet(Context _mContext, int _num_nodes, int _num_mines){
+	public NodeSet(Context _mContext, TextView _countsTextView, int _num_nodes, int _num_mines){
 
 		this.mContext = _mContext;
+		this.countsTextView = _countsTextView;
 		this.num_nodes = _num_nodes;
 		this.num_mines = _num_mines;
 		this.random = new Random();
@@ -117,7 +120,18 @@ public class NodeSet {
 					nodes.get(j).addEdge(nodes.get(i));
 				}
 			}
+			updateCounts();
 		}		
+	}
+	
+	public void updateCounts(){
+		int flagged = 0; 
+		for (Node n : this.nodes){
+			if (!n.isDeleted() && n.isFlagged()){
+				flagged++;
+			}
+		}
+		this.countsTextView.setText(flagged+"F/"+this.num_mines+"B");
 	}
 	
 	public void youLose(){
@@ -147,5 +161,6 @@ public class NodeSet {
 		if ((hidden - flagged) == unflagged){
 			youWinAlert.show();
 		}
+		updateCounts();
 	}
 }
