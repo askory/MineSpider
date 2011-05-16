@@ -14,8 +14,8 @@ public class MineSpider extends Activity {
 	private static RevealButton mRevealButton;
 	private static FlagButton mFlagButton;
 	private static TextView mCountsTextView;
-	private static Button mNewButton;
-	private static Button mPrefsButton;
+	private static CustomButton mNewButton;
+	private static CustomButton mPrefsButton;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -25,11 +25,10 @@ public class MineSpider extends Activity {
         mDrawableView = (DrawableView) findViewById(R.id.drawableView);
         mRevealButton = (RevealButton) findViewById(R.id.revealButton);
         mFlagButton = (FlagButton) findViewById(R.id.flagButton);
-        mCountsTextView = (TextView) findViewById(R.id.countsTextView);
-        mDrawableView.registerItems(mRevealButton, mFlagButton, mCountsTextView);
+        mDrawableView.registerItems(mRevealButton, mFlagButton);
         mDrawableView.initNodeSet();
         
-        mNewButton = (Button) findViewById(R.id.newButton);
+        mNewButton = (CustomButton) findViewById(R.id.newButton);
         mNewButton.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
@@ -38,7 +37,7 @@ public class MineSpider extends Activity {
 			}
 		});
 
-        mPrefsButton = (Button) findViewById(R.id.prefsButton);
+        mPrefsButton = (CustomButton) findViewById(R.id.prefsButton);
         mPrefsButton.setOnClickListener(new View.OnClickListener() {
 			
 			@Override

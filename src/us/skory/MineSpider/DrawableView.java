@@ -4,24 +4,28 @@ import android.util.AttributeSet;
 import android.util.Log;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.TextView;
 
 public class DrawableView extends View {
-	
+
 	private Context mContext;
 	private NodeSet nodeSet;
 	private Node selectedNode;
 	private RevealButton revealButton;
 	private FlagButton flagButton;
-	private TextView countsTextView;
-
+	
 	private Paint edgePaint;
 	private Paint nodePaint;
 	private Paint textPaint;
+	private Bitmap flag;
+	private Bitmap mine;
 	
 	public static final int SIDE_PADDING = 5;
 	public static final float NODE_DRAW_RADIUS = 0.03f;
@@ -29,7 +33,9 @@ public class DrawableView extends View {
 	public static final float NODE_TOUCH_AREA = 0.045f;
 	public static final int TEXT_OFFSET = 6;
 	public static final float TEXT_SCALE = 1.8f;
-
+	public static final int BM_OFFSET_X = -8;
+	public static final int BM_OFFSET_Y = -7;
+	
 	public static final int EDGE_OPACITY = 0x95;
 	public static final int EDGE_COLOR = 0xD0EEDD86;
 	public static final int SELECTED_EDGE_COLOR = 0xD0F0F0F0;
@@ -63,6 +69,10 @@ public class DrawableView extends View {
 	private void initView(Context context){
 		mContext = context;
 
+		Resources res = mContext.getResources();
+		flag = BitmapFactory.decodeResource(res, R.drawable.flag);
+		mine = BitmapFactory.decodeResource(res, R.drawable.mine);
+		
 		edgePaint = new Paint();
 		edgePaint.setStrokeWidth(2);
 		nodePaint = new Paint();
@@ -73,13 +83,12 @@ public class DrawableView extends View {
 	}
 
 	public void initNodeSet(){
-		this.nodeSet = new NodeSet(mContext, countsTextView);
+		this.nodeSet = new NodeSet(mContext, revealButton, flagButton);
 	}
 	
-	public void registerItems(RevealButton _revealButton, FlagButton _flagButton, TextView _countsTextView) {
+	public void registerItems(RevealButton _revealButton, FlagButton _flagButton) {
 		this.revealButton = _revealButton;
 		this.flagButton = _flagButton;
-		this.countsTextView = _countsTextView;
 	}
 
 	
@@ -182,14 +191,17 @@ public class DrawableView extends View {
 			if (!n.isHidden()){
 				if (n.isMine()){
 					textPaint.setColor(MINE_COLOR);
-					canvas.drawText("B", scaleX(n.getX()) - TEXT_OFFSET, scaleY(n.getY()) + TEXT_OFFSET, textPaint);					
+//					canvas.drawText("B", scaleX(n.getX()) - TEXT_OFFSET, scaleY(n.getY()) + TEXT_OFFSET, textPaint);					
+//					canvas.drawText("B", scaleX(n.getX()) - TEXT_OFFSET, scaleY(n.getY()) + TEXT_OFFSET, textPaint);
+					canvas.drawBitmap(mine,scaleX(n.getX()) + BM_OFFSET_X, scaleY(n.getY()) + BM_OFFSET_Y, textPaint);
 				}else{
 					textPaint.setColor(MINE_COLOR);
 					canvas.drawText(Integer.toString(n.getNumNeighborMines()), scaleX(n.getX()) - TEXT_OFFSET, scaleY(n.getY()) + TEXT_OFFSET, textPaint);
 				}
 			}else if (n.isFlagged()){
 				textPaint.setColor(FLAG_COLOR);
-				canvas.drawText("F", scaleX(n.getX()) - TEXT_OFFSET, scaleY(n.getY()) + TEXT_OFFSET, textPaint);
+//				canvas.drawText("F", scaleX(n.getX()) - TEXT_OFFSET, scaleY(n.getY()) + TEXT_OFFSET, textPaint);
+				canvas.drawBitmap(flag,scaleX(n.getX()) + BM_OFFSET_X, scaleY(n.getY()) + BM_OFFSET_Y, textPaint);
 			}
 		}
 		invalidate();

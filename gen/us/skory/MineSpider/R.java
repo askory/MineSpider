@@ -11,15 +11,19 @@ public final class R {
     public static final class attr {
     }
     public static final class drawable {
-        public static final int icon=0x7f020000;
+        public static final int flag=0x7f020000;
+        public static final int icon=0x7f020001;
+        public static final int mine=0x7f020002;
+        public static final int new_game=0x7f020003;
+        public static final int prefs=0x7f020004;
+        public static final int reveal=0x7f020005;
     }
     public static final class id {
         public static final int buttonContainer=0x7f060000;
-        public static final int countsTextView=0x7f060003;
-        public static final int drawableView=0x7f060006;
+        public static final int drawableView=0x7f060005;
         public static final int flagButton=0x7f060002;
-        public static final int newButton=0x7f060004;
-        public static final int prefsButton=0x7f060005;
+        public static final int newButton=0x7f060003;
+        public static final int prefsButton=0x7f060004;
         public static final int revealButton=0x7f060001;
     }
     public static final class layout {

@@ -26,6 +26,10 @@ public class NodeSet {
 	private AlertDialog youLoseAlert;
 	private AlertDialog youWinAlert;
 	private Random random;
+	private RevealButton revealButton;
+	private int rbPadding;
+	private FlagButton flagButton;
+	private int fbPadding;
 	
 	private class IntPair{
 		int a;
@@ -36,10 +40,13 @@ public class NodeSet {
 		}
 	}
 	
-	public NodeSet(Context _mContext, TextView _countsTextView){
+	public NodeSet(Context _mContext, RevealButton _revealButton, FlagButton _flagButton){
 
 		this.mContext = _mContext;
-		this.countsTextView = _countsTextView;
+		this.revealButton = _revealButton;
+		rbPadding = this.revealButton.getText().length();
+		this.flagButton = _flagButton;
+		fbPadding = this.flagButton.getText().length();
 		this.num_nodes = getPref("num_nodes",10,-1);
 		this.num_mines = getPref("num_mines", 2, num_nodes);
 		this.num_edges = getPref("num_edges", num_nodes * 2, num_nodes * 10);
@@ -85,6 +92,9 @@ public class NodeSet {
 	}
 
 	public void reInit() {
+
+		this.revealButton.setTextSuffix("("+num_mines+")");
+		
 		//create num_nodes points on a circle
 		float A = (float) (2*Math.PI / (float) num_nodes);
 		ArrayList<Number> xps = new ArrayList<Number>();
@@ -163,7 +173,7 @@ public class NodeSet {
 				flagged++;
 			}
 		}
-		this.countsTextView.setText(flagged+"F/"+this.num_mines+"B");
+		this.flagButton.setTextSuffix("("+flagged+")");
 	}
 	
 	public void youLose(){
