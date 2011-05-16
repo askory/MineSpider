@@ -10,7 +10,7 @@
 		android:enabled="false"
 	/>
 
-	 <us.skory.MineSpider.SeekBarPreference
+	 <us.skory.MineSpider.NodesSeekBarPreference
 	 	android:key="num_nodes"
         android:title="Nodes"
         android:summary="Choose number of nodes"

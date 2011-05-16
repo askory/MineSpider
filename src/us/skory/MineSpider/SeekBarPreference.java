@@ -45,7 +45,9 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
     		mMin = attrs.getAttributeIntValue(i, 0);
     	}
     }
+    mMax = attrs.getAttributeIntValue(androidns,"max", 10);
   }
+
   @Override 
   protected View onCreateDialogView() {
     LinearLayout.LayoutParams params;
@@ -77,6 +79,7 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
     mSeekBar.setProgress(mValue);
     return layout;
   }
+
   @Override 
   protected void onBindDialogView(View v) {
     super.onBindDialogView(v);
