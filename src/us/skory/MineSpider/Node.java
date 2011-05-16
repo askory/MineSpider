@@ -139,5 +139,9 @@ public class Node {
 		return this.deleted;
 	}
 
+	public boolean hasEdge(Node n) {
+		return this.edges.contains(n);
+	}
+
 
 }

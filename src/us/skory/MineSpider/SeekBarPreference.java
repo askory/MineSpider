@@ -10,13 +10,10 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.preference.DialogPreference;
-import android.preference.PreferenceManager;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.LinearLayout;
-import java.lang.Math;
 
 public class SeekBarPreference extends DialogPreference implements SeekBar.OnSeekBarChangeListener
 {
@@ -24,7 +21,7 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
 
   private SeekBar mSeekBar;
   private TextView mSplashText,mValueText;
-  private Context mContext;
+  protected Context mContext;
 
   private String mDialogMessage, mSuffix;
   protected int mDefault, mMin, mMax, mValue = 0;
@@ -112,7 +109,7 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
   public void onStopTrackingTouch(SeekBar seek) {}
 
   public void setMax(int max) { mMax = max - mMin; }
-  public int getMax() { return mMax + mMin; }
+  public int getMax() { return mMax + mMin ; }
   public void setMin(int min) { mMin = min; }
   public int getMin() { return mMin; }
 

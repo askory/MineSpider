@@ -6,8 +6,8 @@ import android.preference.PreferenceActivity;
 public class MineSpiderPreferenceActivity extends PreferenceActivity {
  
 	NodesSeekBarPreference nodesSeekBar;
-	SeekBarPreference edgesSeekBar;
-	SeekBarPreference minesSeekBar;
+	EdgesSeekBarPreference edgesSeekBar;
+	MinesSeekBarPreference minesSeekBar;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -15,8 +15,8 @@ public class MineSpiderPreferenceActivity extends PreferenceActivity {
         addPreferencesFromResource(R.xml.preferences);
         
         nodesSeekBar = (NodesSeekBarPreference) this.findPreference("num_nodes");
-        edgesSeekBar = (SeekBarPreference) this.findPreference("num_edges");
-        minesSeekBar = (SeekBarPreference) this.findPreference("num_mines");
+        edgesSeekBar = (EdgesSeekBarPreference) this.findPreference("num_edges");
+        minesSeekBar = (MinesSeekBarPreference) this.findPreference("num_mines");
         nodesSeekBar.registerSeekBars(edgesSeekBar, minesSeekBar);
     }
 }

@@ -21,7 +21,7 @@
         min="10"
      />
 
-	 <us.skory.MineSpider.SeekBarPreference
+	 <us.skory.MineSpider.EdgesSeekBarPreference
 	 	android:key="num_edges"
         android:title="Links"
         android:summary="Choose the number of links"
@@ -30,7 +30,7 @@
         android:text=" links"
      />
 
-	 <us.skory.MineSpider.SeekBarPreference
+	 <us.skory.MineSpider.MinesSeekBarPreference
 	 	android:key="num_mines"
         android:title="Mines"
         android:summary="Choose the number of mines"

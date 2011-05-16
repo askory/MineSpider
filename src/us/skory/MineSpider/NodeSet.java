@@ -27,13 +27,22 @@ public class NodeSet {
 	private AlertDialog youWinAlert;
 	private Random random;
 	
+	private class IntPair{
+		int a;
+		int b;
+		public IntPair (int a, int b){
+			this.a = a;
+			this.b = b;
+		}
+	}
+	
 	public NodeSet(Context _mContext, TextView _countsTextView){
 
 		this.mContext = _mContext;
 		this.countsTextView = _countsTextView;
 		this.num_nodes = getPref("num_nodes",10,-1);
 		this.num_mines = getPref("num_mines", 2, num_nodes);
-		this.num_edges = getPref("num_edges", 2, 1000);
+		this.num_edges = getPref("num_edges", num_nodes * 2, num_nodes * 10);
 		this.random = new Random();
 		
 		AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
@@ -108,7 +117,7 @@ public class NodeSet {
 		}
 	
 		//All nodes are connected to their two neighbors in a circular chain
-		//And add some edges between non-neighbors according to PROB_EDGE
+		//Then add the rest of the edges randomly between non-neighbors
 		for (int i = 0; i < num_nodes; i++){
 
 			if (i > 0){
@@ -120,21 +129,31 @@ public class NodeSet {
 				nodes.get(0).addEdge(nodes.get(i));
 			}
 			
-			int stop;
-			if (i == 0){
-				stop = num_nodes - 1;
-			}else{
-				stop = num_nodes;	
+		}
+
+		ArrayList<IntPair> nonEdges = new ArrayList<IntPair>();
+		int h = 0;
+		for (int j = 2; j < num_nodes - 2; j++){
+			nonEdges.add(new IntPair(h,j));
+		}
+		for (int i = 1; i < num_nodes - 1; i++){
+			for (int j = i+2; j < num_nodes - 1; j++){
+				nonEdges.add(new IntPair(i,j));
+			}			
+		}
+		
+		int numEdgesSoFar = num_nodes;
+		while (numEdgesSoFar < num_edges){
+			if (nonEdges.size() == 0){
+				break;
 			}
-			for (int j = i + 2; j < stop; j++){
-				if (random.nextFloat() < PROB_EDGE){
-					Log.v("DrawableView","Adding an edge between nodes "+i+" and "+j);
-					nodes.get(i).addEdge(nodes.get(j));
-					nodes.get(j).addEdge(nodes.get(i));
-				}
-			}
-			updateCounts();
+			IntPair edge = nonEdges.remove(random.nextInt(nonEdges.size()));
+			nodes.get(edge.a).addEdge(nodes.get(edge.b));
+			nodes.get(edge.b).addEdge(nodes.get(edge.a));
+			numEdgesSoFar++;
 		}		
+
+		updateCounts();
 	}
 	
 	public void updateCounts(){
