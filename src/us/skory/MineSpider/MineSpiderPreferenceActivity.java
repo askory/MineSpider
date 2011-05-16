@@ -14,9 +14,9 @@ public class MineSpiderPreferenceActivity extends PreferenceActivity {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
         
-//        nodesSeekBar = (NodesSeekBarPreference) this.findPreference("num_nodes");
-//        edgesSeekBar = (SeekBarPreference) this.findPreference("num_edges");
-//        minesSeekBar = (SeekBarPreference) this.findPreference("num_mines");
-//        nodesSeekBar.registerSeekBars(edgesSeekBar, minesSeekBar);
+        nodesSeekBar = (NodesSeekBarPreference) this.findPreference("num_nodes");
+        edgesSeekBar = (SeekBarPreference) this.findPreference("num_edges");
+        minesSeekBar = (SeekBarPreference) this.findPreference("num_mines");
+        nodesSeekBar.registerSeekBars(edgesSeekBar, minesSeekBar);
     }
 }

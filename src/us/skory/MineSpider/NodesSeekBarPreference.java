@@ -19,20 +19,20 @@ public class NodesSeekBarPreference extends SeekBarPreference {
 		this.minesSeekBar = _minesSeekBar;
 	}
 
-//	@Override
-//	public void onProgressChanged(SeekBar seek, int value, boolean fromTouch){
-//		if (this.edgesSeekBar != null && this.minesSeekBar != null){
-//			int num_nodes = value + this.mMin;
-//	    	this.minesSeekBar.setMax(num_nodes);
-//			this.edgesSeekBar.setMin((num_nodes * 2) - 1);
-//	    	if (num_nodes < 6){
-//	    		this.edgesSeekBar.setMax((int) Math.pow(2, num_nodes));
-//	    	} else {
-//	    		this.edgesSeekBar.setMax(num_nodes * 10);
-//	    	}
-//		}
-//		super.onProgressChanged(seek, value, fromTouch);
-//	}
+	@Override
+	public void onProgressChanged(SeekBar seek, int value, boolean fromTouch){
+		if (this.edgesSeekBar != null && this.minesSeekBar != null){
+			int num_nodes = value + this.mMin;
+	    	this.minesSeekBar.setMax(num_nodes);
+			this.edgesSeekBar.setMin((num_nodes * 2) - 1);
+	    	if (num_nodes < 6){
+	    		this.edgesSeekBar.setMax((int) Math.pow(2, num_nodes));
+	    	} else {
+	    		this.edgesSeekBar.setMax(num_nodes * 10);
+	    	}
+		}
+		super.onProgressChanged(seek, value, fromTouch);
+	}
 
 	
 }

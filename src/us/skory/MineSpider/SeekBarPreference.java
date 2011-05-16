@@ -111,9 +111,9 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
   public void onStartTrackingTouch(SeekBar seek) {}
   public void onStopTrackingTouch(SeekBar seek) {}
 
-  public void setMax(int max) { mMax = max; }
-  public int getMax() { return mMax; }
-  public void setMin(int min) { mMax = min; }
+  public void setMax(int max) { mMax = max - mMin; }
+  public int getMax() { return mMax + mMin; }
+  public void setMin(int min) { mMin = min; }
   public int getMin() { return mMin; }
 
   public void setProgress(int progress) { 
