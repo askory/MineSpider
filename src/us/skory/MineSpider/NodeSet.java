@@ -7,6 +7,8 @@ import java.util.Random;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -18,18 +20,20 @@ public class NodeSet {
 	private Context mContext;
 	private int num_nodes;
 	private int num_mines;
+	private int num_edges;
 	private TextView countsTextView;
 	private ArrayList<Node> nodes;
 	private AlertDialog youLoseAlert;
 	private AlertDialog youWinAlert;
 	private Random random;
 	
-	public NodeSet(Context _mContext, TextView _countsTextView, int _num_nodes, int _num_mines){
+	public NodeSet(Context _mContext, TextView _countsTextView){
 
 		this.mContext = _mContext;
 		this.countsTextView = _countsTextView;
-		this.num_nodes = _num_nodes;
-		this.num_mines = _num_mines;
+		this.num_nodes = getPref("num_nodes",10,-1);
+		this.num_mines = getPref("num_mines", 2, num_nodes);
+		this.num_edges = getPref("num_edges", 2, 1000);
 		this.random = new Random();
 		
 		AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
@@ -50,6 +54,15 @@ public class NodeSet {
 		youWinAlert = builder.create();
 		
 		this.reInit();
+	}
+	
+	private int getPref(String name, int d, int max){
+		SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+		int val = sharedPrefs.getInt(name, d);
+		if (max > 0 && val > max){
+			return max;
+		}
+		return val > 0 ? val : d;
 	}
 
 	public ArrayList<Node> getActiveNodes(){

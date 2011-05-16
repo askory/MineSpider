@@ -73,7 +73,7 @@ public class DrawableView extends View {
 	}
 
 	public void initNodeSet(){
-		this.nodeSet = new NodeSet(mContext, countsTextView, 20, 5);
+		this.nodeSet = new NodeSet(mContext, countsTextView);
 	}
 	
 	public void registerItems(RevealButton _revealButton, FlagButton _flagButton, TextView _countsTextView) {

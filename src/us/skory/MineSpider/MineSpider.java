@@ -1,7 +1,9 @@
 package us.skory.MineSpider;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -11,8 +13,9 @@ public class MineSpider extends Activity {
 	private static DrawableView mDrawableView;
 	private static RevealButton mRevealButton;
 	private static FlagButton mFlagButton;
-	private static Button mNewButton;
 	private static TextView mCountsTextView;
+	private static Button mNewButton;
+	private static Button mPrefsButton;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -34,5 +37,16 @@ public class MineSpider extends Activity {
 		        mDrawableView.initNodeSet();
 			}
 		});
+
+        mPrefsButton = (Button) findViewById(R.id.prefsButton);
+        mPrefsButton.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent settingsActivity = new Intent(getBaseContext(),MineSpiderPreferenceActivity.class);
+				startActivity(settingsActivity);
+			}
+		});
+
 	}
 }

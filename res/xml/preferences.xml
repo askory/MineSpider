@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen
+	xmlns:android="http://schemas.android.com/apk/res/android"
+>
+
+	<Preference
+		android:title="Change difficulty"
+		android:summary="All changes take effect on new game"
+		android:enabled="false"
+	/>
+
+	 <us.skory.MineSpider.SeekBarPreference
+	 	android:key="num_nodes"
+        android:title="Nodes"
+        android:summary="Choose number of nodes"
+        android:dialogMessage="Choose the number of nodes"
+        android:defaultValue="10"
+        android:text=" nodes"
+        android:max="100"
+        min="10"
+     />
+
+	 <us.skory.MineSpider.SeekBarPreference
+	 	android:key="num_edges"
+        android:title="Links"
+        android:summary="Choose the number of links"
+        android:dialogMessage="Choose the number of links"
+        android:defaultValue="10"
+        android:text=" links"
+     />
+
+	 <us.skory.MineSpider.SeekBarPreference
+	 	android:key="num_mines"
+        android:title="Mines"
+        android:summary="Choose the number of mines"
+        android:dialogMessage="Choose the number of mines"
+        android:defaultValue="2"
+        android:text=" mines"
+        android:max="40"
+        min="1"
+     />
+    
+</PreferenceScreen>
