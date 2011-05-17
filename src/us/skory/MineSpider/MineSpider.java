@@ -13,13 +13,13 @@ public class MineSpider extends Activity {
 	private static DrawableView mDrawableView;
 	private static RevealButton mRevealButton;
 	private static FlagButton mFlagButton;
-	private static TextView mCountsTextView;
 	private static CustomButton mNewButton;
 	private static CustomButton mPrefsButton;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+                
         setContentView(R.layout.main);
 
         mDrawableView = (DrawableView) findViewById(R.id.drawableView);

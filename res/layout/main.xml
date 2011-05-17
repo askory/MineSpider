@@ -12,25 +12,25 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:text="         "
-			icon="@drawable/reveal"
+			icon="@drawable/reveal_button"
 		/>
 		<us.skory.MineSpider.FlagButton android:id="@+id/flagButton"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:text="         "
-			icon="@drawable/flag"
+			icon="@drawable/flag_button"
 		/>
 		<us.skory.MineSpider.CustomButton android:id="@+id/newButton"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:text="      "
-			icon="@drawable/new_game"
+			icon="@drawable/new_button"
 		/>
 		<us.skory.MineSpider.CustomButton android:id="@+id/prefsButton"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:text="      "
-			icon="@drawable/prefs"
+			icon="@drawable/prefs_button"
 		/>
 	</LinearLayout>
 	<us.skory.MineSpider.DrawableView android:id="@+id/drawableView"
