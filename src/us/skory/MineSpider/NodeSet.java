@@ -9,8 +9,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Log;
-import android.widget.TextView;
 
 public class NodeSet {
 	
@@ -21,15 +19,12 @@ public class NodeSet {
 	private int num_nodes;
 	private int num_mines;
 	private int num_edges;
-	private TextView countsTextView;
 	private ArrayList<Node> nodes;
 	private AlertDialog youLoseAlert;
 	private AlertDialog youWinAlert;
 	private Random random;
 	private RevealButton revealButton;
-	private int rbPadding;
 	private FlagButton flagButton;
-	private int fbPadding;
 	
 	private class IntPair{
 		int a;
@@ -44,9 +39,7 @@ public class NodeSet {
 
 		this.mContext = _mContext;
 		this.revealButton = _revealButton;
-		rbPadding = this.revealButton.getText().length();
 		this.flagButton = _flagButton;
-		fbPadding = this.flagButton.getText().length();
 		this.num_nodes = getPref("num_nodes",10,-1);
 		this.num_mines = getPref("num_mines", 2, num_nodes);
 		this.num_edges = getPref("num_edges", num_nodes * 2, num_nodes * 10);

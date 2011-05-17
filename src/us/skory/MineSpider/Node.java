@@ -2,13 +2,11 @@ package us.skory.MineSpider;
 
 import java.util.ArrayList;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.util.Log;
 
 public class Node {
 		
+	@SuppressWarnings("unused")
 	private Context mContext;
 	private NodeSet nodeSet;
 	private int id;

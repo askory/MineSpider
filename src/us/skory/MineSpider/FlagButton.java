@@ -1,8 +1,6 @@
 package us.skory.MineSpider;
 
 import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.BitmapFactory;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="us.skory.MineSpider">
+      package="us.skory.MineSpider" android:versionName="0.1" android:versionCode="1">
 
 
     <application android:icon="@drawable/icon" android:label="MineSpider">
@@ -17,5 +17,5 @@
 		/>
 
     </application>
-    <uses-sdk android:minSdkVersion="3" />
+    <uses-sdk android:minSdkVersion="4"/>
 </manifest>
