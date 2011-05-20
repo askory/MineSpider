@@ -16,8 +16,11 @@ public final class R {
         public static final int icon=0x7f020002;
         public static final int mine=0x7f020003;
         public static final int new_button=0x7f020004;
-        public static final int prefs_button=0x7f020005;
-        public static final int reveal_button=0x7f020006;
+        public static final int new_game=0x7f020005;
+        public static final int prefs=0x7f020006;
+        public static final int prefs_button=0x7f020007;
+        public static final int reveal=0x7f020008;
+        public static final int reveal_button=0x7f020009;
     }
     public static final class id {
         public static final int buttonContainer=0x7f060000;
