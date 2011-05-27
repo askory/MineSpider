@@ -25,6 +25,7 @@ public class NodeSet {
 	private Random random;
 	private RevealButton revealButton;
 	private FlagButton flagButton;
+	private DrawableView drawableView;
 	
 	private class IntPair{
 		int a;
@@ -35,9 +36,10 @@ public class NodeSet {
 		}
 	}
 	
-	public NodeSet(Context _mContext, RevealButton _revealButton, FlagButton _flagButton){
+	public NodeSet(Context _mContext, DrawableView _drawableView, RevealButton _revealButton, FlagButton _flagButton){
 
 		this.mContext = _mContext;
+		this.drawableView = _drawableView;
 		this.revealButton = _revealButton;
 		this.flagButton = _flagButton;
 		this.num_nodes = getPref("num_nodes",10,-1);
@@ -117,6 +119,10 @@ public class NodeSet {
 				n_id = random.nextInt(num_nodes);				
 			}
 			this.nodes.get(n_id).setMine(true);
+			
+			if (drawableView != null){
+				drawableView.setSelectedNode(null);
+			}
 		}
 	
 		//All nodes are connected to their two neighbors in a circular chain

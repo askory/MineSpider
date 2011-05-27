@@ -83,7 +83,7 @@ public class DrawableView extends View {
 	}
 
 	public void initNodeSet(){
-		this.nodeSet = new NodeSet(mContext, revealButton, flagButton);
+		this.nodeSet = new NodeSet(mContext, this, revealButton, flagButton);
 	}
 	
 	public void registerItems(RevealButton _revealButton, FlagButton _flagButton) {
@@ -165,6 +165,7 @@ public class DrawableView extends View {
 		if (this.nodeSet == null)
 			return;
 		
+		//if there is no selected node
 		if (this.selectedNode == null || this.selectedNode.isDeleted()){
 			//Draw edges
 			for (Node n : nodeSet.getActiveNodes()){
@@ -225,12 +226,14 @@ public class DrawableView extends View {
 				canvas.drawCircle(scaleX(selectedNode.getX()), scaleY(selectedNode.getY()), scaleX(SELECTED_NODE_DRAW_RADIUS), nodePaint);
 			}
 			for (Node e : selectedNode.getEdges()){
-				if (e.isHidden() || e.isMine()){
-					nodePaint.setColor(HIDDEN_NODE_COLOR);
-				}else{
-					nodePaint.setColor(setAlpha(getColor(e),NODE_OPACITY));
+				if (!e.isDeleted()){
+					if (e.isHidden() || e.isMine()){
+						nodePaint.setColor(HIDDEN_NODE_COLOR);
+					}else{
+						nodePaint.setColor(setAlpha(getColor(e),NODE_OPACITY));
+					}
+					canvas.drawCircle(scaleX(e.getX()), scaleY(e.getY()), scaleX(NODE_DRAW_RADIUS), nodePaint);
 				}
-				canvas.drawCircle(scaleX(e.getX()), scaleY(e.getY()), scaleX(NODE_DRAW_RADIUS), nodePaint);
 			}
 		}
 		
@@ -278,6 +281,10 @@ public class DrawableView extends View {
 			}
 		}
 		return true;
+	}
+
+	public void setSelectedNode(Node node) {
+		this.selectedNode = node;
 	}
 
 }
