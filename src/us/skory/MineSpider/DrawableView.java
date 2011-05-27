@@ -34,18 +34,18 @@ public class DrawableView extends View {
 	public static final int BM_OFFSET_X = -8;
 	public static final int BM_OFFSET_Y = -7;
 	
-	public static final int EDGE_OPACITY = 0x95;
-	public static final int UNSELECTED_EDGE_OPACITY = 0x40;
+	public static final int EDGE_OPACITY = 0xA5;
+	public static final int UNSELECTED_EDGE_OPACITY = 0x55;
 	public static final int EDGE_COLOR = 0xD0EEDD86;
 	public static final int SELECTED_EDGE_COLOR = 0xD0F0F0F0;
 	public static final int NODE_OPACITY = 0xD0;
-	public static final int UNSELECTED_NODE_OPACITY = 0x55;
+	public static final int UNSELECTED_NODE_OPACITY = 0x75;
 	public static final int HIDDEN_NODE_COLOR = 0xD0DDCB86;
 	public static final int SELECTED_NODE_COLOR = 0xDDF0F0F0;
 	public static final int[] NUMBER_COLORS = new int[]{
 		0,
-		0xFF3849FF,     //1 = blue
-		0xFF0D8500,		//2 = green
+		0xFF1770FF,     //1 = blue
+		0xFF00F210,		//2 = green
 		0xFFED2121,		//3 = red
 		0xFFC121ED,		//4 = purple
 		0xFFC86AF7,		//5 = light purple
