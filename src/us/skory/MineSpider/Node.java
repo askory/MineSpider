@@ -90,7 +90,7 @@ public class Node {
 	}
 
 	public void reveal(boolean sideEffects) {
-		if (this.isMine()){
+		if (this.isMine() && this.hidden){
 			this.flagged = false;
 			this.hidden = false;
 			if (sideEffects){
