@@ -237,8 +237,8 @@ public class DrawableView extends View {
 			if (!selectedNode.isHidden() && !selectedNode.isMine()){
 				nodePaint.setColor(setAlpha(getColor(selectedNode),NODE_OPACITY));
 				canvas.drawCircle(scaleX(selectedNode.getX()), scaleY(selectedNode.getY()), scaleX(SELECTED_NODE_DRAW_RADIUS), nodePaint);
-				drawMarker(canvas,selectedNode);
 			}
+			drawMarker(canvas,selectedNode);
 		}
 
 		invalidate();
