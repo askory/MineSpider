@@ -34,6 +34,7 @@ public class MineSpider extends Activity {
 			@Override
 			public void onClick(View v) {
 		        mDrawableView.initNodeSet();
+		        mDrawableView.invalidate();
 			}
 		});
 
