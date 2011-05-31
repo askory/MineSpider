@@ -31,8 +31,8 @@ public class DrawableView extends View {
 	public static final float NODE_TOUCH_AREA = 0.045f;
 	public static final int TEXT_OFFSET = 6;
 	public static final float TEXT_SCALE = 1.8f;
-	public static final int BM_OFFSET_X = -8;
-	public static final int BM_OFFSET_Y = -7;
+	public static final float BM_OFFSET_X = -0.037f;
+	public static final float BM_OFFSET_Y = -0.024f;
 	
 	public static final int EDGE_OPACITY = 0xA5;
 	public static final int UNSELECTED_EDGE_OPACITY = 0x55;
@@ -246,14 +246,14 @@ public class DrawableView extends View {
 		if (!n.isHidden()){
 			if (n.isMine()){
 				textPaint.setColor(MINE_COLOR);
-				canvas.drawBitmap(mine,scaleX(n.getX()) + BM_OFFSET_X, scaleY(n.getY()) + BM_OFFSET_Y, textPaint);
+				canvas.drawBitmap(mine,scaleX(n.getX()) + scaleX(BM_OFFSET_X), scaleY(n.getY()) + scaleY(BM_OFFSET_Y), textPaint);
 			}else{
 				textPaint.setColor(MINE_COLOR);
 				canvas.drawText(Integer.toString(n.getNumNeighborMines()), scaleX(n.getX()) - TEXT_OFFSET, scaleY(n.getY()) + TEXT_OFFSET, textPaint);
 			}
 		}else if (n.isFlagged()){
 			textPaint.setColor(FLAG_COLOR);
-			canvas.drawBitmap(flag,scaleX(n.getX()) + BM_OFFSET_X, scaleY(n.getY()) + BM_OFFSET_Y, textPaint);
+			canvas.drawBitmap(flag,scaleX(n.getX()) + scaleX(BM_OFFSET_X), scaleY(n.getY()) + scaleY(BM_OFFSET_Y), textPaint);
 		}
 		
 	}
