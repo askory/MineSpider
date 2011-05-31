@@ -187,6 +187,7 @@ public class DrawableView extends View {
 					nodePaint.setColor(setAlpha(getColor(n),NODE_OPACITY));
 				}
 				canvas.drawCircle(scaleX(n.getX()), scaleY(n.getY()), scaleX(NODE_DRAW_RADIUS), nodePaint);
+				drawMarker(canvas,n);
 			}
 
 		//if there is a selected node
@@ -206,6 +207,7 @@ public class DrawableView extends View {
 						nodePaint.setColor(setAlpha(getColor(n),UNSELECTED_NODE_OPACITY));
 					}
 					canvas.drawCircle(scaleX(n.getX()), scaleY(n.getY()), scaleX(NODE_DRAW_RADIUS), nodePaint);
+					drawMarker(canvas,n);
 				}
 			}
 			//next draw the edges to the selected node
@@ -218,13 +220,7 @@ public class DrawableView extends View {
 					canvas.drawLine(scaleX(selectedNode.getX()), scaleY(selectedNode.getY()), scaleX(e.getX()), scaleY(e.getY()), edgePaint);
 				}		
 			}
-			//finally draw the selected node and the nodes touching it
-			nodePaint.setColor(SELECTED_NODE_COLOR);
-			canvas.drawCircle(scaleX(selectedNode.getX()), scaleY(selectedNode.getY()), scaleX(NODE_DRAW_RADIUS), nodePaint);
-			if (!selectedNode.isHidden() && !selectedNode.isMine()){
-				nodePaint.setColor(setAlpha(getColor(selectedNode),NODE_OPACITY));
-				canvas.drawCircle(scaleX(selectedNode.getX()), scaleY(selectedNode.getY()), scaleX(SELECTED_NODE_DRAW_RADIUS), nodePaint);
-			}
+			//finally draw the nodes touching the selected, then the node itself
 			for (Node e : selectedNode.getEdges()){
 				if (!e.isDeleted()){
 					if (e.isHidden() || e.isMine()){
@@ -233,31 +229,37 @@ public class DrawableView extends View {
 						nodePaint.setColor(setAlpha(getColor(e),NODE_OPACITY));
 					}
 					canvas.drawCircle(scaleX(e.getX()), scaleY(e.getY()), scaleX(NODE_DRAW_RADIUS), nodePaint);
+					drawMarker(canvas,e);
 				}
 			}
-		}
-		
-		//draw node's text if not hidden or if flagged
-		for (Node n : nodeSet.getActiveNodes()){
-			if (!n.isHidden()){
-				if (n.isMine()){
-					textPaint.setColor(MINE_COLOR);
-	//					canvas.drawText("B", scaleX(n.getX()) - TEXT_OFFSET, scaleY(n.getY()) + TEXT_OFFSET, textPaint);					
-	//					canvas.drawText("B", scaleX(n.getX()) - TEXT_OFFSET, scaleY(n.getY()) + TEXT_OFFSET, textPaint);
-					canvas.drawBitmap(mine,scaleX(n.getX()) + BM_OFFSET_X, scaleY(n.getY()) + BM_OFFSET_Y, textPaint);
-				}else{
-					textPaint.setColor(MINE_COLOR);
-					canvas.drawText(Integer.toString(n.getNumNeighborMines()), scaleX(n.getX()) - TEXT_OFFSET, scaleY(n.getY()) + TEXT_OFFSET, textPaint);
-				}
-			}else if (n.isFlagged()){
-				textPaint.setColor(FLAG_COLOR);
-	//				canvas.drawText("F", scaleX(n.getX()) - TEXT_OFFSET, scaleY(n.getY()) + TEXT_OFFSET, textPaint);
-				canvas.drawBitmap(flag,scaleX(n.getX()) + BM_OFFSET_X, scaleY(n.getY()) + BM_OFFSET_Y, textPaint);
+			nodePaint.setColor(SELECTED_NODE_COLOR);
+			canvas.drawCircle(scaleX(selectedNode.getX()), scaleY(selectedNode.getY()), scaleX(NODE_DRAW_RADIUS), nodePaint);
+			if (!selectedNode.isHidden() && !selectedNode.isMine()){
+				nodePaint.setColor(setAlpha(getColor(selectedNode),NODE_OPACITY));
+				canvas.drawCircle(scaleX(selectedNode.getX()), scaleY(selectedNode.getY()), scaleX(SELECTED_NODE_DRAW_RADIUS), nodePaint);
+				drawMarker(canvas,selectedNode);
 			}
 		}
+
 		invalidate();
 	}
 
+	private void drawMarker(Canvas canvas, Node n){
+		if (!n.isHidden()){
+			if (n.isMine()){
+				textPaint.setColor(MINE_COLOR);
+				canvas.drawBitmap(mine,scaleX(n.getX()) + BM_OFFSET_X, scaleY(n.getY()) + BM_OFFSET_Y, textPaint);
+			}else{
+				textPaint.setColor(MINE_COLOR);
+				canvas.drawText(Integer.toString(n.getNumNeighborMines()), scaleX(n.getX()) - TEXT_OFFSET, scaleY(n.getY()) + TEXT_OFFSET, textPaint);
+			}
+		}else if (n.isFlagged()){
+			textPaint.setColor(FLAG_COLOR);
+			canvas.drawBitmap(flag,scaleX(n.getX()) + BM_OFFSET_X, scaleY(n.getY()) + BM_OFFSET_Y, textPaint);
+		}
+		
+	}
+	
 	private void selectNode(Node n) {
 		this.selectedNode = n;
 		if (revealButton != null)
