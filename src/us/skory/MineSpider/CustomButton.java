@@ -25,7 +25,6 @@ public class CustomButton extends Button {
 	protected DrawableView drawableView;
 	private Paint paint;
 	private Bitmap buttonIcon;
-	private Rect rect;
 	private String textPadding = "";
 		
 	public CustomButton(Context context){
