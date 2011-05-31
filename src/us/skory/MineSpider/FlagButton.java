@@ -44,6 +44,9 @@ public class FlagButton extends CustomButton {
 				}
 			}
 		}
+		if (this.drawableView != null){
+			this.drawableView.invalidate();
+		}
 		return true;
 	}
 

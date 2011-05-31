@@ -37,6 +37,9 @@ public class RevealButton extends CustomButton {
 				setPressed(true);
 			}
 		}
+		if (this.drawableView != null){
+			this.drawableView.invalidate();
+		}
 		return true;
 	}
 	

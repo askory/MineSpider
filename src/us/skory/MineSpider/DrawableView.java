@@ -240,8 +240,6 @@ public class DrawableView extends View {
 			}
 			drawMarker(canvas,selectedNode);
 		}
-
-		invalidate();
 	}
 
 	private void drawMarker(Canvas canvas, Node n){
@@ -282,6 +280,7 @@ public class DrawableView extends View {
 				}
 			}
 		}
+		invalidate();
 		return true;
 	}
 

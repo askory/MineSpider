@@ -20,6 +20,7 @@ public class CustomButton extends Button {
 
 	protected Node selectedNode;
 	protected Context mContext;
+	protected DrawableView drawableView;
 	private Paint paint;
 	private Bitmap buttonIcon;
 	private Rect rect;
@@ -51,6 +52,10 @@ public class CustomButton extends Button {
 		    }			
 			setButtonIcon(BitmapFactory.decodeResource(res, iconId));
 		}
+	}
+	
+	protected void setDrawableView(DrawableView _drawableView){
+		this.drawableView = _drawableView;
 	}
 	
 	protected void setButtonIcon(Bitmap bm){
