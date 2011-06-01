@@ -122,6 +122,7 @@ public class NodeSet {
 			
 			if (drawableView != null){
 				drawableView.setSelectedNode(null);
+				drawableView.invalidate();
 			}
 		}
 	

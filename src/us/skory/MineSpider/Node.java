@@ -100,7 +100,7 @@ public class Node {
 			this.deleted = true;
 			if (sideEffects){
 				for (Node n : this.edges){
-					if (!n.isDeleted()){
+					if (!n.isDeleted() && !n.isMine()){
 						n.reveal(true);
 					}
 				}
