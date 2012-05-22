@@ -4,7 +4,7 @@
 
 
     <application android:icon="@drawable/icon" android:label="MineSpider">
-        <activity android:name="MineSpider"
+        <activity android:name="MineSpiderActivity"
                   android:label="MineSpider">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
