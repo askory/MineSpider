@@ -8,23 +8,21 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.widget.Button;
 
 public class CustomButton extends Button {
 	
 	private static final String androidns = "http://schemas.android.com/apk/res/android";
-	private static final float ICON_TOP = 0.15f;
-	private static final float ICON_LEFT = 0.14f;
-	private static final float ICON_BOTTOM = 0.8f;
-	private static final float ICON_RIGHT = 0.8f;
+	private static final int ICON_TOP = 10;
+	private static final int ICON_LEFT = 8;
+	private static final int ICON_BOTTOM = 35;
+	private static final int ICON_RIGHT = 33;
 
 	protected Node selectedNode;
 	protected Context mContext;
-	protected DrawableView drawableView;
 	private Paint paint;
 	private Bitmap buttonIcon;
+	private Rect rect;
 	private String textPadding = "";
 		
 	public CustomButton(Context context){
@@ -42,6 +40,7 @@ public class CustomButton extends Button {
 		if (attr != null){
 			textPadding = attr.getAttributeValue(androidns, "text");
 			paint = new Paint();
+			rect = new Rect(ICON_LEFT,ICON_TOP,ICON_RIGHT,ICON_BOTTOM);
 			Resources res = mContext.getResources();
 			//Huge cludge until I can figure out this custom namespace business!
 			int iconId = 0;
@@ -54,27 +53,8 @@ public class CustomButton extends Button {
 		}
 	}
 	
-	protected void setDrawableView(DrawableView _drawableView){
-		this.drawableView = _drawableView;
-	}
-	
 	protected void setButtonIcon(Bitmap bm){
 		this.buttonIcon = bm;
-	}
-	
-	protected Rect scaleRect(){
-		int width;
-		if (!this.getText().equals(this.textPadding)){
-			width = (int) (this.getWidth() - this.getTextSize() - this.getPaddingRight());
-		}else{
-			width = this.getWidth();
-		}
-		int height = this.getHeight();
-		int left = (int) (ICON_LEFT * width);
-		int top = (int) (ICON_TOP * height);
-		int right = (int) (ICON_RIGHT * width);
-		int bottom = (int) (ICON_BOTTOM * height);
-		return new Rect(left,top,right,bottom);
 	}
 	
 	public void setTextSuffix(String suffix){
@@ -84,16 +64,16 @@ public class CustomButton extends Button {
 	@Override
 	protected void onDraw(Canvas canvas){
 		if (buttonIcon != null)
-			canvas.drawBitmap(buttonIcon, null, scaleRect(), paint);
+			canvas.drawBitmap(buttonIcon, null, rect, paint);
 		super.onDraw(canvas);
 	}
 	
-	public void selectNode(Node n){
+	public void onNodeSelected(Node n){
 		this.selectedNode = n;
 	}
 
 	public Node getSelectedNode() {
 		return selectedNode;
 	}
-
+	
 }

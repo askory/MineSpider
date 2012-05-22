@@ -4,192 +4,161 @@ import java.util.ArrayList;
 import java.lang.Math;
 import java.util.Random;
 
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-public class NodeSet {
+import android.graphics.Point;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class NodeSet implements Parcelable {
 	
 	public static double PROB_EDGE = 0.13;
 	public static float LAYOUT_RADIUS = 0.45f;
 
-	private Context mContext;
-	private int num_nodes;
-	private int num_mines;
-	private int num_edges;
-	private ArrayList<Node> nodes;
-	private AlertDialog youLoseAlert;
-	private AlertDialog youWinAlert;
-	private Random random;
-	private RevealButton revealButton;
-	private FlagButton flagButton;
-	private DrawableView drawableView;
-	
-	private class IntPair{
-		int a;
-		int b;
-		public IntPair (int a, int b){
-			this.a = a;
-			this.b = b;
-		}
-	}
-	
-	public NodeSet(Context _mContext, DrawableView _drawableView, RevealButton _revealButton, FlagButton _flagButton){
+	private int mNumNodes;
+	private int mNumMines;
+	private int mNumEdges;
+	private final ArrayList<Node> mNodes;
 
-		this.mContext = _mContext;
-		this.drawableView = _drawableView;
-		this.revealButton = _revealButton;
-		this.flagButton = _flagButton;
-		this.num_nodes = getPref("num_nodes",10,-1);
-		this.num_mines = getPref("num_mines", 2, num_nodes);
-		this.num_edges = getPref("num_edges", num_nodes * 2, num_nodes * 10);
-		this.random = new Random();
-		
-		AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-		builder.setCancelable(true)
-		       .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-		           public void onClick(DialogInterface dialog, int id) {
-		                reInit();
-		           }
-		       })
-		       .setNegativeButton("No", new DialogInterface.OnClickListener() {
-		           public void onClick(DialogInterface dialog, int id) {
-		                dialog.cancel();
-		           }
-		       });
-		builder.setMessage("Kaboom. You lose!\nStart a new game?");
-		youLoseAlert = builder.create();
-		builder.setMessage("Well done, You won!\nStart a new game?");
-		youWinAlert = builder.create();
-		
-		this.reInit();
-	}
+	private Random mRandom;
+
+	private MineSpiderPresenter mPresenter;
 	
-	private int getPref(String name, int d, int max){
-		SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-		int val = sharedPrefs.getInt(name, d);
-		if (max > 0 && val > max){
-			return max;
-		}
-		return val > 0 ? val : d;
+	private NodeSet() {
+		this(0, 0, 0);
 	}
 
-	public ArrayList<Node> getActiveNodes(){
-		ArrayList<Node> ret = new ArrayList<Node>();
-		for (Node n : this.nodes){
-			if (!n.isDeleted()){
-				ret.add(n);
-			}
+	public NodeSet(int numNodes, int numMines, int numEdges){
+
+		mNumNodes = numNodes;
+		mNumMines = numMines;
+		mNumEdges = numEdges;
+
+		mNodes = new ArrayList<Node>();
+
+		mRandom = new Random();
+		
+		if (numNodes > 0) {
+			reInit();
 		}
-		return ret;
 	}
 
 	public void reInit() {
-
-		this.revealButton.setTextSuffix("("+num_mines+")");
 		
 		//create num_nodes points on a circle
-		float A = (float) (2*Math.PI / (float) num_nodes);
+		float A = (float) (2*Math.PI / (float) mNumNodes);
 		ArrayList<Number> xps = new ArrayList<Number>();
 		ArrayList<Number> yps = new ArrayList<Number>();
-		for (int p = 0; p < num_nodes; p++){
+		for (int p = 0; p < mNumNodes; p++){
 			xps.add(0.5 + (LAYOUT_RADIUS * Math.cos(p * A)));
 			yps.add(0.5 + (LAYOUT_RADIUS * Math.sin(p * A)));
 		}
-				
-		nodes = new ArrayList<Node>();
-		for (int i = 0; i < num_nodes; i++){
+
+		mNodes.clear();
+		for (int i = 0; i < mNumNodes; i++){
 	
 			//Create a new node with n.id = i
-			Node n = new Node(mContext, this, i);
+			Node n = new Node(this, i);
 	
 			//Position node randomly on circle
-			int p = random.nextInt(xps.size());
+			int p = mRandom.nextInt(xps.size());
 			n.setX((xps.remove(p).floatValue()));
 			n.setY((yps.remove(p).floatValue()));
 
-			nodes.add(n);
+			mNodes.add(n);
 		}
 
-		for (int m = 0; m < num_mines; m++){
-			int n_id = random.nextInt(num_nodes);
-			while (this.nodes.get(n_id).isMine()){
-				n_id = random.nextInt(num_nodes);				
+		for (int m = 0; m < mNumMines; m++){
+			int n_id = mRandom.nextInt(mNumNodes);
+			while (this.mNodes.get(n_id).isMine()){
+				n_id = mRandom.nextInt(mNumNodes);				
 			}
-			this.nodes.get(n_id).setMine(true);
-			
-			if (drawableView != null){
-				drawableView.setSelectedNode(null);
-				drawableView.invalidate();
-			}
+			this.mNodes.get(n_id).setMine(true);
 		}
 	
 		//All nodes are connected to their two neighbors in a circular chain
 		//Then add the rest of the edges randomly between non-neighbors
-		for (int i = 0; i < num_nodes; i++){
+		for (int i = 0; i < mNumNodes; i++){
 
 			if (i > 0){
-				nodes.get(i).addEdge(nodes.get(i-1));
-				nodes.get(i-1).addEdge(nodes.get(i));
+				mNodes.get(i).addEdge(mNodes.get(i-1));
+				mNodes.get(i-1).addEdge(mNodes.get(i));
 			}
-			if (i == num_nodes - 1){
-				nodes.get(i).addEdge(nodes.get(0));
-				nodes.get(0).addEdge(nodes.get(i));
+			if (i == mNumNodes - 1){
+				mNodes.get(i).addEdge(mNodes.get(0));
+				mNodes.get(0).addEdge(mNodes.get(i));
 			}
 			
 		}
 
-		ArrayList<IntPair> nonEdges = new ArrayList<IntPair>();
+		ArrayList<Point> nonEdges = new ArrayList<Point>();
 		int h = 0;
-		for (int j = 2; j < num_nodes - 2; j++){
-			nonEdges.add(new IntPair(h,j));
+		for (int j = 2; j < mNumNodes - 2; j++){
+			nonEdges.add(new Point(h,j));
 		}
-		for (int i = 1; i < num_nodes - 1; i++){
-			for (int j = i+2; j < num_nodes - 1; j++){
-				nonEdges.add(new IntPair(i,j));
+		for (int i = 1; i < mNumNodes - 1; i++){
+			for (int j = i+2; j < mNumNodes - 1; j++){
+				nonEdges.add(new Point(i,j));
 			}			
 		}
 		
-		int numEdgesSoFar = num_nodes;
-		while (numEdgesSoFar < num_edges){
+		int numEdgesSoFar = mNumNodes;
+		while (numEdgesSoFar < mNumEdges){
 			if (nonEdges.size() == 0){
 				break;
 			}
-			IntPair edge = nonEdges.remove(random.nextInt(nonEdges.size()));
-			nodes.get(edge.a).addEdge(nodes.get(edge.b));
-			nodes.get(edge.b).addEdge(nodes.get(edge.a));
+			Point edge = nonEdges.remove(mRandom.nextInt(nonEdges.size()));
+			mNodes.get(edge.x).addEdge(mNodes.get(edge.y));
+			mNodes.get(edge.y).addEdge(mNodes.get(edge.x));
 			numEdgesSoFar++;
 		}		
 
 		updateCounts();
 	}
-	
+
 	public void updateCounts(){
 		int flagged = 0; 
-		for (Node n : this.nodes){
+		for (Node n : mNodes){
 			if (!n.isDeleted() && n.isFlagged()){
 				flagged++;
 			}
 		}
-		this.flagButton.setTextSuffix("("+flagged+")");
+		if (mPresenter != null) {
+			mPresenter.setFlagButtonCount(flagged);
+		}
 	}
-	
+
+	public void setPresenter(MineSpiderPresenter presenter) {
+		mPresenter = presenter;
+	}
+
+	public ArrayList<Node> getActiveNodes(){
+		ArrayList<Node> nodes = new ArrayList<Node>();
+		for (Node n : this.mNodes){
+			if (!n.isDeleted()){
+				nodes.add(n);
+			}
+		}
+		return nodes;
+	}
 	public void youLose(){
-		for (Node n : this.nodes){
+		for (Node n : this.mNodes){
 			if (!n.isDeleted()){
 				n.reveal(false);
 			}
 		}
-		youLoseAlert.show();
+		if (mPresenter != null) {
+			mPresenter.showLost();
+		}
 	}
 
 	public void checkWin(){
 		int hidden = 0;
 		int flagged = 0;
 		int unflagged = 0;
-		for (Node n : this.nodes){
+		for (Node n : this.mNodes){
 			if (n.isHidden()){
 				hidden++;
 			}
@@ -201,8 +170,69 @@ public class NodeSet {
 			}
 		}
 		if ((hidden - flagged) == unflagged){
-			youWinAlert.show();
+			if (mPresenter != null) {
+				mPresenter.showWon();
+			}
 		}
 		updateCounts();
+	}
+
+	public int getNumMines() {
+		return mNumMines;
+	}
+
+	public int getNumFlags() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel out, int flags) {
+		out.writeInt(mNumNodes);
+		out.writeInt(mNumMines);
+		out.writeInt(mNumEdges);
+		Node[] nodes = new Node[mNodes.size()];
+		out.writeParcelableArray(mNodes.toArray(nodes), flags);
+	}
+
+	public JSONArray toJson() {
+		JSONArray json = new JSONArray();
+		for (Node n : mNodes) {
+			json.put(n.toJson());
+		}
+		return json;
+	}
+
+	public static NodeSet fromJson(JSONArray json) {
+		NodeSet nodeSet = new NodeSet();
+		int numDirectedEdges = 0;
+		try {
+			for (int i = 0; i < json.length(); i++) {
+				JSONObject nodeJson = json.getJSONObject(i);
+				int id = nodeJson.getInt("id");
+				nodeSet.mNodes.add(id, Node.fromJson(nodeSet, nodeJson));
+			}
+			nodeSet.mNumNodes = nodeSet.mNodes.size();
+			for (Node n : nodeSet.mNodes) {
+				if (n.isMine()) {
+					nodeSet.mNumMines++;
+				}
+				JSONArray edges = json.getJSONObject(n.getId()).getJSONArray("edges");
+				numDirectedEdges += edges.length();
+				for (int j = 0; j < edges.length(); j++) {
+					Node e = nodeSet.mNodes.get(edges.getInt(j));
+					n.addEdge(e);
+				}
+			}
+			nodeSet.mNumEdges = numDirectedEdges / 2;
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return nodeSet;
 	}
 }

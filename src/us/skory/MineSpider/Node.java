@@ -2,144 +2,189 @@ package us.skory.MineSpider;
 
 import java.util.ArrayList;
 
-import android.content.Context;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-public class Node {
-		
-	@SuppressWarnings("unused")
-	private Context mContext;
-	private NodeSet nodeSet;
-	private int id;
-	private float x;
-	private float y;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-	private Boolean mine;
-	private Boolean hidden;
-	private Boolean flagged;
-	private Boolean deleted;
-	
+public class Node implements Parcelable {
+
+	private static final long serialVersionUID = 1L;
+
+	private static int MINE = 0x1;
+	private static int HIDDEN = 0x2;
+	private static int FLAGGED = 0x4;
+	private static int DELETED = 0x8;
+
+	private final NodeSet mNodeSet;
+	private final int mId;
+	private float mX;
+	private float mY;
+
+	private int mState = HIDDEN;
+
 	private int numNeighborMines;
-	private ArrayList<Node> edges;
+	private ArrayList<Node> mEdges;
 	
-	public Node(Context _mContext, NodeSet _nodeSet, int _id){
+	public Node(NodeSet nodeSet, int id){
 		super();
-		this.mContext = _mContext;
-		this.nodeSet = _nodeSet;
-		this.id = _id;
-		this.edges = new ArrayList<Node>();
-		this.mine = false;
-		this.hidden = true;
-		this.flagged = false;
-		this.deleted = false;
-		this.numNeighborMines = 0;
+		mNodeSet = nodeSet;
+		mId = id;
+		mEdges = new ArrayList<Node>();
+		numNeighborMines = 0;
 	}
 
 	public int getId(){
-		return this.id;
+		return mId;
 	}
 
 	public float getX(){
-		return this.x;
+		return mX;
 	}
 
 	public float getY(){
-		return this.y;
+		return mY;
 	}
 
-	public void setX(float _x){
-		 this.x = _x;
+	public void setX(float x){
+		 mX = x;
 	}
 
-	public void setY(float _y){
-		this.y = _y;
+	public void setY(float y){
+		mY = y;
 	}
 
 	public Boolean isMine(){
-		return this.mine;
+		return (mState & MINE) > 0;
 	}
 
 	public Boolean isHidden(){
-		return (!this.deleted && this.hidden);
+		return (mState & ~DELETED & HIDDEN) > 0;
 	}
 
 	public Boolean isFlagged(){
-		return this.flagged;
+		return (mState & FLAGGED) > 0;
 	}
 
-	public void setMine(Boolean _mine){
-		this.mine = _mine;
+	public boolean isDeleted() {
+		return (mState & DELETED) > 0;
+	}
+
+	public void setMine(Boolean mine){
+		mState = mine ? mState | MINE : mState & ~MINE;
 	}
 	
 	public void addEdge(Node n){
-		this.edges.add(n);
+		mEdges.add(n);
 		if (n.isMine()){
-			this.numNeighborMines++;
+			numNeighborMines++;
 		}
 	}
 
 	public ArrayList<Node> getEdges(){
-		return this.edges;
+		return mEdges;
 	}
 	
 	public int getNumEdges(){
-		return this.edges.size();
+		return mEdges.size();
 	}
 
 	public int getNumNeighborMines(){
-		return this.numNeighborMines;
+		return numNeighborMines;
 	}
 
 	public void reveal(boolean sideEffects) {
-		if (this.isMine() && this.hidden){
-			this.flagged = false;
-			this.hidden = false;
+		mState = mState & ~FLAGGED & ~HIDDEN;
+		if (isMine()){
 			if (sideEffects){
-				nodeSet.youLose();
+				mNodeSet.youLose();
 			}
-		} else if (this.numNeighborMines == 0){
-			this.deleted = true;
+		} else if (numNeighborMines == 0){
+			mState |= DELETED;
 			if (sideEffects){
-				for (Node n : this.edges){
-					if (!n.isDeleted() && !n.isMine()){
+				for (Node n : mEdges){
+					if (!n.isDeleted()){
 						n.reveal(true);
 					}
 				}
-				nodeSet.checkWin();
+				mNodeSet.checkWin();
 			}
 		} else {
-			this.flagged = false;
-			this.hidden = false;
 			if (sideEffects){
-				nodeSet.checkWin();
+				mNodeSet.checkWin();
 			}
 		}
 	}
 
 	public Boolean flag() {
-		if (this.hidden){
-			this.flagged = true;
-			nodeSet.checkWin();
+		if (isHidden()){
+			mState |= FLAGGED;
+			mNodeSet.checkWin();
 			return true;
 		}
 		return false;
 	}
 
 	public Boolean unflag() {
-		if (this.hidden){
-			this.flagged = false;
-			nodeSet.updateCounts();
+		if (isHidden()){
+			mState &= ~FLAGGED;
+			mNodeSet.updateCounts();
 			return true;
 		}
 		return false;
 	}
 
-	public boolean isDeleted() {
-		return this.deleted;
-	}
-
 	public boolean hasEdge(Node n) {
-		return this.edges.contains(n);
+		return mEdges.contains(n);
 	}
 
+	@Override
+	public int describeContents() {
+		return 0;
+	}
 
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeInt(mId);
+		dest.writeInt(mState);
+		int[] edgeIds = new int[mEdges.size()];
+		for (int i = 0; i < mEdges.size(); i++) {
+			edgeIds[i] = mEdges.get(i).getId();
+		}
+		dest.writeIntArray(edgeIds);
+	}
+
+	public JSONObject toJson() {
+		JSONObject json = new JSONObject();
+		JSONArray edges = new JSONArray();
+		try {
+			json.put("id", mId);
+			json.put("state", mState);
+			json.put("x", (int) (mX * 1000));
+			json.put("y", (int) (mY * 1000));
+			for (Node e : mEdges) {
+				edges.put(e.getId());
+			}
+			json.put("edges", edges);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return json;
+	}
+
+	public static Node fromJson(NodeSet nodeSet, JSONObject json) {
+		Node node = null;
+		try {
+			int id = json.getInt("id");
+			node = new Node(nodeSet, id);
+			node.mState = json.getInt("state");
+			node.mX = json.getInt("x") / 1000f;
+			node.mY = json.getInt("y") / 1000f;
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return node;
+	}
 }

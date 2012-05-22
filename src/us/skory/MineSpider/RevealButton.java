@@ -8,20 +8,15 @@ public class RevealButton extends CustomButton {
 	
 	public RevealButton(Context context){
 		super(context);
-		initRevealButton();
 	}
 
 	public RevealButton(Context context, AttributeSet attr){
 		super(context, attr);
-		initRevealButton();
-	}
-
-	private void initRevealButton(){
 	}
 		
 	@Override
-	public void selectNode(Node n){
-		super.selectNode(n);
+	public void onNodeSelected(Node n){
+		super.onNodeSelected(n);
 		if (n != null && !n.isHidden()){
 			this.setPressed(true);
 		} else {
@@ -36,9 +31,6 @@ public class RevealButton extends CustomButton {
 				selectedNode.reveal(true);
 				setPressed(true);
 			}
-		}
-		if (this.drawableView != null){
-			this.drawableView.invalidate();
 		}
 		return true;
 	}

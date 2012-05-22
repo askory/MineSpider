@@ -20,8 +20,8 @@ public class FlagButton extends CustomButton {
 	}
 
 	@Override
-	public void selectNode(Node n){
-		super.selectNode(n);
+	public void onNodeSelected(Node n){
+		super.onNodeSelected(n);
 		if (n != null && n.isFlagged()){
 			this.setPressed(true);
 		} else {
@@ -43,9 +43,6 @@ public class FlagButton extends CustomButton {
 					}
 				}
 			}
-		}
-		if (this.drawableView != null){
-			this.drawableView.invalidate();
 		}
 		return true;
 	}
